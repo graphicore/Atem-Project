@@ -1,5 +1,5 @@
 # Atem-Project
-**A**tem—**T**ooling **E**xpressive **M**odels: This is the central hub of the project and [host](./tree/gh-pages) of its website. We will guide the project (discussions, community, roadmaps etc.) from here.
+**A**tem—**T**ooling **E**xpressive **M**odels: This is the central hub of the project and [host](./tree/gh-pages) of its website. We will guide the project (documentation, discussions, community, roadmaps etc.) from here.
 
 ## The Atem-Project is a collection of sub-projects:
 
