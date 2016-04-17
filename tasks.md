@@ -22,6 +22,7 @@ directory
  * Spread the word and see if we can reach new contributors.
  * Do we need a FAQ?
  * Each sub project should have some more detailed tasks to get started.
+ * It says so in the headline, but: we need documentation for almost everything. A priority list and decisions what to do later or just as a draft would be good.
 
 ## Programming
 
