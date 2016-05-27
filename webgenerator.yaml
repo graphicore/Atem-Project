@@ -1,0 +1,43 @@
+template_folder: website/templates
+source_defaults:
+    suffix: '.html'
+    types:
+        # what if I want to have a file like "index.md" end up as "index.html" ?
+        # at the moment this will become "index.md.html"
+        md: null
+        txt: null
+        # this makes nice filenames, like index.html for an "index" file
+        '': {type: 'htmlpart'}
+targets:
+    # the keys are the target directories
+    # this is the website root directory
+    '':
+        source: website
+        maxdepth: 1
+        file_map:
+            # now this creates a index.html from index.md, which is great
+            # but it also allows a "index.md.html" to be created, but since
+            # that file already has a target, I'd like to not make it also
+            # available via "index.md.html", which kind of is a hard problem
+            # here. Maybe this can be controlled on a per target basis, but
+            # probably not for all targets, as I think it is OK for other
+            # targets to process the same files
+            # in this case, we could look if the requested file is a value
+            # in one of the file_map entries and on that base reject the
+            # request
+            index: index.md
+    # not sure if I'm going to keep the "web" target as it
+    # but it's good for the moment
+    web:
+        # overwrite the source dir to be the directory root
+        source: '' # this is the repository root
+        # defaults to float('inf') and 0 turns the input channel effectively off
+        maxdepth: 1
+    # These keys are paths from the repository root to directories.
+    # They may contain slashes
+    web/Proposals:
+        source: Proposals
+        template: proposals.html
+        types:
+            # only md, all proposals are meant to be in this format
+            md: null
