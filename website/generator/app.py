@@ -2,6 +2,7 @@
 
 from functools import partial
 from flask import Flask, abort, request, Markup, render_template
+from flask_frozen import Freezer
 import jinja2
 import yaml
 import os, sys
@@ -61,15 +62,17 @@ def extractPageData(data):
 
     return ''.join(lines), parsed
 
-def readSourceFile(*pathparts):
-    path = []
 
-    # this is simply to produce not a path with // in it, a bit of cosmetics
+def makePath(*pathparts):
+    path = []
     for part in pathparts:
         if part:
             path.append(part)
+    return os.path.join(*path)
+
+def readSourceFile(path):
     try:
-        with open(os.path.join(*path)) as f:
+        with open(path) as f:
             data = f.read()
     except FileNotFoundError:
         return False, None, None
@@ -110,34 +113,51 @@ def prepareContent(typeSetup, typeKey, content):
                                                         .format(contentType))
     return content
 
-def genericFileRenderer(rootpath, sourcedir, config, filename):
-    # nice, filename is indeed something like path/to/file.md
-    # in http://localhost:5000/web/Proposals/path/to/file.md
-    # so, the <path: converter works well!
+
+def checkFileForEndpoint(config, filename, pathparts):
+    original = filename
     # this way we can request 'index' and respond with 'index.md'
+
     if 'file_map' in config:
         if filename in config['file_map']:
-            filename = config['file_map'].get(filename, filename)
+            filename = config['file_map'][filename]
         elif filename in config['file_map'].values():
             # rather redirect?
             # this is to prevent files being created twice for the same
             # source, i.e.  /index.html and /index.md.html
-            abort(404)
-
+            return False, 404
 
     success, typeKey, typeSetup = getTypeSetup(config, filename)
     if not success:
         # no setup for the type
-        abort(404)
+        return False, 404
 
     normalfilename = os.path.normpath(filename)
     if normalfilename.startswith('.'):
         # above root
-        abort(404)
-    if len(normalfilename.split('/')) > config.get('maxdepth', float('inf')):
-        abort(404)
+        return False, 404
 
-    success, content, pageSetup = readSourceFile(rootpath, sourcedir, normalfilename)
+    if normalfilename.count(os.path.sep) >= config.get('maxdepth', float('inf')):
+        return False, 404
+
+
+    filePath = makePath(* pathparts + [normalfilename])
+    if not os.path.isfile(filePath):
+        return False, 404
+
+    return True, (filePath, typeKey, typeSetup)
+
+def genericFileRenderer(rootpath, sourcedir, config, filename):
+    # nice, filename is indeed something like path/to/file.md
+    # in http://localhost:5000/web/Proposals/path/to/file.md
+    # so, the <path: converter works well!
+    success, result = checkFileForEndpoint(config, filename, [rootpath, sourcedir])
+    if not success:
+        abort(result or 404)
+    filePath, typeKey, typeSetup = result
+
+    # the file actually does not exist!
+    success, content, pageSetup = readSourceFile(filePath)
     if not success:
         abort(404)
 
@@ -162,6 +182,7 @@ def genericFileRenderer(rootpath, sourcedir, config, filename):
     return render_template(template, **viewVars)
 
 def buildRoutes(rootpath, app, config, parent=None):
+    targets = []
     defaults = config.get('source_defaults', {});
     # if no "targets" are defined, this will not define any endpoints
     for target, setup in config.get('targets', {}).items():
@@ -185,17 +206,43 @@ def buildRoutes(rootpath, app, config, parent=None):
             # this is the website root target
             targetToken = ''
             endpoint = '__root__'
+        indexEndpoint = endpoint + '.index'
         rule = '/{target}<path:filename>{suffix}'.format(target=targetToken, suffix=suffix)
-        viewFunc = partial(genericFileRenderer, rootpath, source, targetSetup)
-        app.add_url_rule(rule, endpoint, viewFunc)
+        indexRule = '/{target}'.format(target=targetToken)
+
         # TODO: remove when everything is set up
         print('rule:', rule, 'source:', source, endpoint)
 
-        #special case for index.html for this target
-        rule = '/{target}'.format(target=targetToken)
-        viewFunc = partial(genericFileRenderer, rootpath, source, targetSetup
-                                                    , filename='index')
-        app.add_url_rule(rule, endpoint + '.index', viewFunc)
+        viewFunc = partial( genericFileRenderer
+                          , rootpath
+                          , source
+                          , targetSetup
+        )
+        app.add_url_rule(rule, endpoint, viewFunc)
+
+        # special case for index.html for this target
+        # This is a problem, because it has no variable part in the url
+        # frozen flask tries to request it always. Regardless if the
+        # url generator yields it or not. The subsequent 404 answer
+        # is handled badly by frozen flask.
+        viewFunc = partial( genericFileRenderer
+                          , rootpath
+                          , source
+                          , targetSetup
+                          , filename='index'
+        )
+        app.add_url_rule(indexRule, indexEndpoint, viewFunc)
+
+        targets.append({
+            'source': source
+          , 'config': targetSetup
+          , 'endpoint': endpoint
+          , 'indexEndpoint': indexEndpoint
+          , 'suffix': suffix
+          , 'rootpath': rootpath
+        })
+
+    return targets;
 
 
 def makeApp(rootpath, configFileName='webgenerator.yaml'):
@@ -218,11 +265,83 @@ def makeApp(rootpath, configFileName='webgenerator.yaml'):
             app.jinja_loader
         ])
         app.jinja_loader = jinja2_loader
-    buildRoutes(rootpath, app, config)
-    return app
+    targets = buildRoutes(rootpath, app, config)
+    return app, targets
+
+
+# Todo: make url generators for the defined targets using the configuration
+def getEndpoints(target, filename, checkFileMap=True):
+    config = target['config']
+    rootpath = target['rootpath']
+    source = target['source']
+    success, _ = checkFileForEndpoint(config, filename, [rootpath, source])
+    if not success:
+        # this would make a 404
+        return
+
+    files = []
+    if checkFileMap and 'file_map' in config and filename in config['file_map'].values():
+        # file_map will be used to generate these requests
+        return
+
+    # Only a index.html can create this shorter url
+    if filename + target['suffix'] == 'index.html':
+        yield target['indexEndpoint'], {}
+    else:
+        yield target['endpoint'], {'filename': filename}
+
+def genericURLGenerator(targets):  # Some other function name
+    """
+        This yields `(endpoint, values)` tuples
+
+        You can specify a different endpoint by yielding a (endpoint, values)
+        tuple instead of just values, or you can by-pass
+        url_for and simply yield URLs as strings.
+
+        targets is a list of dictionaries
+        {
+            'source': source
+          , 'config': targetSetup
+          , 'endpoint': endpoint
+          , 'indexEndpoint': indexEndpoint
+          , 'suffix': suffix
+          , 'rootpath': rootpath
+        }
+    """
+    for target in targets:
+        maxDepth = target['config'].get('maxdepth', float('inf'))
+        if maxDepth == 0:
+            continue
+        # http://stackoverflow.com/questions/229186/os-walk-without-digging-into-directories-below
+        for root, dirs, files in os.walk('.' if target['source'] == '' else target['source']):
+            depth = root.count(os.path.sep) + 1
+            if depth >= maxDepth:
+                # This is a the magic piece, it modifies the list that is
+                # used by the os.walk iterator.
+                # Deeper dirs won't be visited...
+                del dirs[:]
+            if depth > maxDepth:
+                continue
+            for filename in files:
+                yield from getEndpoints(target, filename)
+            for filename in target['config'].get('file_map', {}):
+                yield from getEndpoints(target, filename, checkFileMap=False)
 
 if __name__ == '__main__':
     # first argument sets rootpath
-    rootpath = sys.argv[1] if len(sys.argv) >= 2 else os.getcwd()
-    app = makeApp(rootpath)
-    app.run(debug=True)
+    rootpath = sys.argv[-1] if len(sys.argv) >= 2 else os.getcwd()
+    app, targets = makeApp(rootpath)
+    if len(sys.argv) >= 3:
+        app.config.update(
+            FREEZER_RELATIVE_URLS=True
+          , FREEZER_DESTINATION=os.path.abspath(sys.argv[1])
+        )
+        freezer = Freezer( app
+                           # We'll have to request all pages manually. This
+                           # way we can create some endpoints pro forma
+                           # without yielding 404 errors.
+                         , with_no_argument_rules=False)
+        freezer.register_generator(partial(genericURLGenerator, targets))
+        freezer.freeze()
+    else:
+        app.run(debug=True)

@@ -131,6 +131,7 @@ Atem-Project$ pip install pyyaml
 Atem-Project$ pip install misaka # markdown
 Atem-Project$ pip install houdini.py # html escaping in mardow synax highlighter
 Atem-Project$ pip install Pygments # syntax highlighting
+Atem-Project$ pip install Frozen-Flask
 ```
 
 ## custom template variables

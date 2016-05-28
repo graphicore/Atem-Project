@@ -26,16 +26,19 @@ targets:
             # in one of the file_map entries and on that base reject the
             # request
             index: index.md
-    # not sure if I'm going to keep the "web" target as it
+    # not sure if I'm going to keep the "content" target as it
     # but it's good for the moment
-    web:
+    content:
         # overwrite the source dir to be the directory root
         source: '' # this is the repository root
         # defaults to float('inf') and 0 turns the input channel effectively off
         maxdepth: 1
+        types:
+            # only markdown
+            md: null
     # These keys are paths from the repository root to directories.
     # They may contain slashes
-    web/Proposals:
+    content/Proposals:
         source: Proposals
         template: proposals.html
         types:
