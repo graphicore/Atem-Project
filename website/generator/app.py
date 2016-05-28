@@ -147,7 +147,7 @@ def checkFileForEndpoint(config, filename, pathparts):
 
     return True, (filePath, typeKey, typeSetup)
 
-def genericFileRenderer(rootpath, sourcedir, config, filename):
+def genericFileRenderer(app, rootpath, sourcedir, config, filename):
     # nice, filename is indeed something like path/to/file.md
     # in http://localhost:5000/web/Proposals/path/to/file.md
     # so, the <path: converter works well!
@@ -175,7 +175,7 @@ def genericFileRenderer(rootpath, sourcedir, config, filename):
     # Also, keep in mind that I expect the content authors to be aware
     # of their responsibility and not to have malicious intentions (project
     # commit rights imply this kind of trust).
-    for item in [config, typeSetup, pageSetup]:
+    for item in [app.config, config, typeSetup, pageSetup]:
         viewVars.update(item)
 
     template = viewVars.get('template', 'standard.html')
@@ -210,10 +210,8 @@ def buildRoutes(rootpath, app, config, parent=None):
         rule = '/{target}<path:filename>{suffix}'.format(target=targetToken, suffix=suffix)
         indexRule = '/{target}'.format(target=targetToken)
 
-        # TODO: remove when everything is set up
-        print('rule:', rule, 'source:', source, endpoint)
-
         viewFunc = partial( genericFileRenderer
+                          , app
                           , rootpath
                           , source
                           , targetSetup
@@ -226,6 +224,7 @@ def buildRoutes(rootpath, app, config, parent=None):
         # url generator yields it or not. The subsequent 404 answer
         # is handled badly by frozen flask.
         viewFunc = partial( genericFileRenderer
+                          , app
                           , rootpath
                           , source
                           , targetSetup
@@ -331,6 +330,11 @@ if __name__ == '__main__':
     # first argument sets rootpath
     rootpath = sys.argv[-1] if len(sys.argv) >= 2 else os.getcwd()
     app, targets = makeApp(rootpath)
+
+    # we'll need this to make menus
+    ALL_LINKS = list(genericURLGenerator(targets));
+    app.config.update(ALL_LINKS=ALL_LINKS)
+
     if len(sys.argv) >= 3:
         app.config.update(
             FREEZER_RELATIVE_URLS=True
@@ -341,7 +345,7 @@ if __name__ == '__main__':
                            # way we can create some endpoints pro forma
                            # without yielding 404 errors.
                          , with_no_argument_rules=False)
-        freezer.register_generator(partial(genericURLGenerator, targets))
+        freezer.register_generator(partial(iter, ALL_LINKS))
         freezer.freeze()
     else:
         app.run(debug=True)

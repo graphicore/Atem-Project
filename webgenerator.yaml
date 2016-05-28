@@ -41,6 +41,8 @@ targets:
     content/Proposals:
         source: Proposals
         template: proposals.html
+        file_map:
+            index: README.md
         types:
             # only md, all proposals are meant to be in this format
             md: null

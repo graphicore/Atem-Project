@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}| Atem Project{% endblock %}
+{% block header %}
+<header>
+    <h1>Atem Project</h1>
+</header>
+{% endblock %}
+{% block body %}
+<nav>
+<!-- This is an initial poor-mans sitemap -->
+{% for item in ALL_LINKS %}
+    <li><a href="{{ url_for(item[0], **item[1]) }}">{{item[0]}}:{{item[1].get('filename','/')}}</a></li>{% endfor %}
+</nav>
+<article>{{ content }}</article>
+{% endblock %}
