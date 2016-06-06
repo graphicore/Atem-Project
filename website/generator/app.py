@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 
-from functools import partial
-from flask import Flask, abort, request, Markup, render_template
-from flask_frozen import Freezer
+from functools import partial, wraps
+from datetime import datetime
+import subprocess
+import os, sys, stat
+
+from flask import Flask, abort, request, Markup, render_template, url_for \
+                , send_from_directory, render_template_string
+from flask_frozen import Freezer, relative_url_for
+from werkzeug.contrib.atom import AtomFeed
 import jinja2
 import yaml
-import os, sys
+
 
 
 import misaka as markdown
@@ -68,7 +74,7 @@ def makePath(*pathparts):
     for part in pathparts:
         if part:
             path.append(part)
-    return os.path.join(*path)
+    return os.path.abspath(os.path.join(*path))
 
 def readSourceFile(path):
     try:
@@ -80,7 +86,7 @@ def readSourceFile(path):
     content, pageData = extractPageData(data)
     return True, content, pageData
 
-def getTypeSetup(config, filename):
+def checkTypeSetup(config, filename):
     """
         get the type setup via the filename suffix
     """
@@ -88,16 +94,32 @@ def getTypeSetup(config, filename):
     # remove the dot, if any
     # This way, we can define an '' empty key target entry to handle
     # files without type/extension
-    suffix = suffix[1:]
-    if not 'types' in config or not suffix in config['types']:
-        return False, None, None
-    # may also be defined as `null` or otherwise falsy which becomes
-    # an empty dict.
-    setup = config['types'].get(suffix) or {}
-    return True, suffix, setup
+    typeKey = suffix[1:]
+    types = config.get('types', None)
+    fail = False, None
 
-def prepareContent(typeSetup, typeKey, content):
-    contentType = typeSetup.get('type', typeKey)
+    if types is None:
+        return fail
+
+    if typeKey in types:
+        pass
+    elif '*' in types:
+        typeKey = '*'
+    else:
+        return fail
+
+    # May be defined falsy which always becomes an empty dict.
+    typeSetup = types.get(typeKey, None) or {}
+    return True, dict(typeKey=typeKey, typeSetup=typeSetup)
+
+def prepareContent(contentType, content, context):
+
+    if not context.get('skip_content_templating', False):
+        if 'source' in context:
+            context = context.copy()
+            del context['source']
+        content = render_template_string(content, **context)
+
     if contentType == 'md':
         content = Markup(md(content))
     elif contentType == 'htmlpart':
@@ -109,13 +131,91 @@ def prepareContent(typeSetup, typeKey, content):
         pass
     else:
         # no defaulting, this is a programming error
-        raise Exception('Unkown contentType, don\'t know how to treat "{0}".'
+        raise ValueError('Unkown contentType, don\'t know how to treat "{0}".'
                                                         .format(contentType))
     return content
 
+class FileDataCache(object):
+    def __init__(self):
+        self._files = {}
 
-def checkFileForEndpoint(config, filename, pathparts):
+    def get(self, path, *default):
+        f = self._files.get(path, None)
+        if f is None:
+            success, content, setup = readSourceFile(path)
+            if not success:
+                if len(default):
+                    return default[0]
+                raise KeyError('Can\'t read file at "{0}".'.format(path))
+            f = self._files[path] = FileCacheItem(path, content, setup)
+        return f
+
+class FileCacheItem(object):
+    def __init__(self, path, content, setup):
+        self.path = path
+        self.content = content
+        self.setup = setup
+        self._times = None
+
+    def _getGitDate(self, filename, diffFilter):
+        """
+            diff-filter=A === added date
+            diff-filter=M === modified date
+        """
+        p = subprocess.Popen(['git', 'log' , '--diff-filter={0}'.format(diffFilter)
+                            , '--follow', '--format=%at', '-1', '--', filename]
+                            , stdout=subprocess.PIPE
+                            # Ask the git repository that contains
+                            # the file, if any.
+                            , cwd=os.path.dirname(filename)
+                            )
+        out, err = p.communicate()
+        # out = b'1464452704\n' OR b''
+        timestamp = out.strip()
+        if not timestamp:
+            # also if file is not in git at all
+            return None
+        datetime.fromtimestamp(float(timestamp))
+
+    def _getStatDates(self, filename):
+        statData = os.stat(self.filename)
+        return tuple([datetime.fromtimestamp(statData[i])
+                            for i in (stat.ST_CTIME, stat.ST_MTIME)])
+
+    def _getTimes(self):
+        """
+        return a tuple of 2 datetime objects representing creation and
+        modification dates.
+
+        Ask git for the creation (added) time and modification time of the File.
+
+        If git can't provide an answer(maybe because the file was never
+        added to git, or not modified after adding) use os.stat instead.
+        """
+
+        ctime = self._getGitDate(self.path, 'A')
+        if not ctime:
+            return self._getStatDates(self.path)
+
+        mtime = self._getGitDate(self.path, 'M')
+        if not mtime:
+            mtime = self._getStatDates(self.path)[1]
+
+        return ctime, mtime
+
+    @property
+    def times(self):
+        """ A tuple of 2 datetime objects representing creation and
+        modification dates.
+        """
+        if not self._times:
+            self._times = self._getTimes()
+        return self._times;
+
+
+def checkFileForEndpoint(config, pathparts, filename, rendererConfig):
     original = filename
+    result = {'filename': filename}
     # this way we can request 'index' and respond with 'index.md'
 
     if 'file_map' in config:
@@ -127,10 +227,13 @@ def checkFileForEndpoint(config, filename, pathparts):
             # source, i.e.  /index.html and /index.md.html
             return False, 404
 
-    success, typeKey, typeSetup = getTypeSetup(config, filename)
-    if not success:
-        # no setup for the type
-        return False, 404
+    checkTypeSetup = rendererConfig.get('checkTypeSetup', False)
+    if checkTypeSetup:
+        success, checkTypeSetupResult = checkTypeSetup(config, filename)
+        if not success:
+            # no setup for the type
+            return False, 404
+        result.update(checkTypeSetupResult)
 
     normalfilename = os.path.normpath(filename)
     if normalfilename.startswith('.'):
@@ -140,32 +243,61 @@ def checkFileForEndpoint(config, filename, pathparts):
     if normalfilename.count(os.path.sep) >= config.get('maxdepth', float('inf')):
         return False, 404
 
-
     filePath = makePath(* pathparts + [normalfilename])
     if not os.path.isfile(filePath):
         return False, 404
+    result.update(filePath=filePath)
 
-    return True, (filePath, typeKey, typeSetup)
+    return True, result
 
-def genericFileRenderer(app, rootpath, sourcedir, config, filename):
+def staticRenderer(config, fileData):
+    directory, filename = os.path.split(fileData['filePath'])
+    try:
+        return send_from_directory(directory, filename)
+    except Exception as e:
+        raise e
+    return result
+
+def templatedRenderer(config, fileData):
+    fileItem = app.config['fileDataCache'].get(fileData['filePath'], None)
+
+    if not fileItem:
+        # the file actually does not exist!
+        abort(404)
+
+    typeSetup = fileData['typeSetup']
+    typeKey = fileData['typeKey']
+    contentType = typeSetup.get('type', typeKey)
+
+    context = {}
+    for item in [config, typeSetup, fileItem.setup]:
+        if item: context.update(item)
+
+    viewVars = {
+        'title': fileData['filename']
+      , 'content': prepareContent(contentType, fileItem.content, context)
+    }
+    viewVars.update(context)
+    template = viewVars.get('template', 'standard.html')
+    return render_template(template, **viewVars)
+
+renderers = {
+    'static': (staticRenderer, {'checkTypeSetup': False})
+  , 'templated': (templatedRenderer, {'checkTypeSetup': checkTypeSetup})
+}
+
+def render(rendererName, app, endpointConfig, pathsparts, filename):
+    fn, rendererConfig = renderers[rendererName]
     # nice, filename is indeed something like path/to/file.md
     # in http://localhost:5000/web/Proposals/path/to/file.md
     # so, the <path: converter works well!
-    success, result = checkFileForEndpoint(config, filename, [rootpath, sourcedir])
+    success, result = checkFileForEndpoint(endpointConfig, pathsparts, filename, rendererConfig)
     if not success:
         abort(result or 404)
-    filePath, typeKey, typeSetup = result
 
-    # the file actually does not exist!
-    success, content, pageSetup = readSourceFile(filePath)
-    if not success:
-        abort(404)
+    fileData = result
 
-    viewVars = {
-        'title': filename
-      , 'content': prepareContent(typeSetup, typeKey, content)
-    }
-
+    ###
     # The most specific setup overrides the less specific
     # i.e. pageData can set the "template"
     # also, content can be overridden, which may be useful in some fringe cases
@@ -175,82 +307,84 @@ def genericFileRenderer(app, rootpath, sourcedir, config, filename):
     # Also, keep in mind that I expect the content authors to be aware
     # of their responsibility and not to have malicious intentions (project
     # commit rights imply this kind of trust).
-    for item in [app.config, config, typeSetup, pageSetup]:
-        viewVars.update(item)
-
-    template = viewVars.get('template', 'standard.html')
-    return render_template(template, **viewVars)
+    config = {}
+    for item in [app.config, endpointConfig]:
+        config.update(item)
+    return fn(config, fileData)
 
 def buildRoutes(rootpath, app, config, parent=None):
     targets = []
     defaults = config.get('source_defaults', {});
     # if no "targets" are defined, this will not define any endpoints
-    for target, setup in config.get('targets', {}).items():
+    for targetDir, setup in config.get('targets', {}).items():
         # if source is not defined, target is considered the name of the source dir
-        targetSetup = {}
+        targetConfig = {}
         for item in [defaults, setup]:
-            targetSetup.update(item)
+            targetConfig.update(item)
         # This can't be overridden by source_defaults, would be kind of
         # against the point.
-        source = setup.get('source', target)
+        source = setup.get('source', targetDir)
+
+        rendererName = setup.get('renderer', 'templated')
+
         # .html is in the most cases a sensible choice, because of our target,
         # to produce static html files a webserver could determine this way
         # a mime type of text/html. This is actually a recommendation by
         # frozen flask, which is going to be used.
-        suffix = targetSetup.get('suffix', '')
-        if target:
-            targetToken = '{0}/'.format(target)
+        suffix = targetConfig.get('suffix', '')
+        if targetDir:
+            targetToken = '{0}/'.format(targetDir)
             # do we need to remove the slashes? for url_for maybe?
-            endpoint = target #.replace('/', '.')
+            endpoint = targetDir #.replace('/', '.')
         else:
             # this is the website root target
             targetToken = ''
             endpoint = '__root__'
-        indexEndpoint = endpoint + '.index'
+        indexEndpoint = endpoint + ':index'
         rule = '/{target}<path:filename>{suffix}'.format(target=targetToken, suffix=suffix)
         indexRule = '/{target}'.format(target=targetToken)
-
-        viewFunc = partial( genericFileRenderer
+        pathparts = [rootpath, source]
+        viewFunc = partial( render
+                          , rendererName
                           , app
-                          , rootpath
-                          , source
-                          , targetSetup
+                          , targetConfig
+                          , pathparts
         )
         app.add_url_rule(rule, endpoint, viewFunc)
 
         # special case for index.html for this target
-        # This is a problem, because it has no variable part in the url
-        # frozen flask tries to request it always. Regardless if the
-        # url generator yields it or not. The subsequent 404 answer
-        # is handled badly by frozen flask.
-        viewFunc = partial( genericFileRenderer
+        # Because it has no variable part in the url frozen flask tries
+        # to request it by default, always unless the with_no_argument_rules
+        # argument of Freezer is False, which is in this case.
+        viewFunc = partial( render
+                          , rendererName
                           , app
-                          , rootpath
-                          , source
-                          , targetSetup
+                          , targetConfig
+                          , pathparts
                           , filename='index'
         )
         app.add_url_rule(indexRule, indexEndpoint, viewFunc)
 
         targets.append({
-            'source': source
-          , 'config': targetSetup
+            'rendererName': rendererName
+          , 'config': targetConfig
           , 'endpoint': endpoint
           , 'indexEndpoint': indexEndpoint
           , 'suffix': suffix
-          , 'rootpath': rootpath
+          , 'source': source
+          , 'pathparts': pathparts
         })
 
     return targets;
 
 
 def makeApp(rootpath, configFileName='webgenerator.yaml'):
-    app = Flask(__name__)
-
     # If configFileName is unusable for any reason we want this to fail
     # the point of this method is to bootstrap app from configFile
     with open(os.path.join(rootpath, configFileName), 'r') as configFile:
         config = yaml.load(configFile)
+
+    app = Flask(__name__)
 
     # Todo, this should be possible as a list, so we could include
     # external templates as well
@@ -265,15 +399,17 @@ def makeApp(rootpath, configFileName='webgenerator.yaml'):
         ])
         app.jinja_loader = jinja2_loader
     targets = buildRoutes(rootpath, app, config)
+    app.config['fileDataCache'] = FileDataCache()
     return app, targets
 
 
 # Todo: make url generators for the defined targets using the configuration
 def getEndpoints(target, filename, checkFileMap=True):
     config = target['config']
-    rootpath = target['rootpath']
-    source = target['source']
-    success, _ = checkFileForEndpoint(config, filename, [rootpath, source])
+    pathparts = target['pathparts']
+
+    rendererConfig = renderers[target['rendererName']][1]
+    success, result = checkFileForEndpoint(config, pathparts, filename, rendererConfig)
     if not success:
         # this would make a 404
         return
@@ -285,11 +421,11 @@ def getEndpoints(target, filename, checkFileMap=True):
 
     # Only a index.html can create this shorter url
     if filename + target['suffix'] == 'index.html':
-        yield target['indexEndpoint'], {}
+        yield target['indexEndpoint'], {}, result['filePath']
     else:
-        yield target['endpoint'], {'filename': filename}
+        yield target['endpoint'], {'filename': filename}, result['filePath']
 
-def genericURLGenerator(targets):  # Some other function name
+def genericURLGenerator(target):  # Some other function name
     """
         This yields `(endpoint, values)` tuples
 
@@ -297,43 +433,204 @@ def genericURLGenerator(targets):  # Some other function name
         tuple instead of just values, or you can by-pass
         url_for and simply yield URLs as strings.
 
-        targets is a list of dictionaries
+        target is a dictionary
         {
-            'source': source
-          , 'config': targetSetup
+            'rendererName': rendererName
+          , 'config': targetConfig
           , 'endpoint': endpoint
           , 'indexEndpoint': indexEndpoint
           , 'suffix': suffix
-          , 'rootpath': rootpath
+          , 'source': source
+          , 'pathparts': pathparts
         }
     """
-    for target in targets:
-        maxDepth = target['config'].get('maxdepth', float('inf'))
-        if maxDepth == 0:
+    maxDepth = target['config'].get('maxdepth', float('inf'))
+    if maxDepth == 0:
+        return
+    # http://stackoverflow.com/questions/229186/os-walk-without-digging-into-directories-below
+    for root, dirs, files in os.walk('.' if target['source'] == '' else target['source']):
+        depth = root.count(os.path.sep) + 1
+        if depth >= maxDepth:
+            # This is a the magic piece, it modifies the list that is
+            # used by the os.walk iterator.
+            # Deeper dirs won't be visited...
+            del dirs[:]
+        if depth > maxDepth:
             continue
-        # http://stackoverflow.com/questions/229186/os-walk-without-digging-into-directories-below
-        for root, dirs, files in os.walk('.' if target['source'] == '' else target['source']):
-            depth = root.count(os.path.sep) + 1
-            if depth >= maxDepth:
-                # This is a the magic piece, it modifies the list that is
-                # used by the os.walk iterator.
-                # Deeper dirs won't be visited...
-                del dirs[:]
-            if depth > maxDepth:
+        for filename in files:
+            yield from getEndpoints(target, filename)
+        for filename in target['config'].get('file_map', {}):
+            yield from getEndpoints(target, filename, checkFileMap=False)
+
+
+class Menu(object):
+    def __init__(self, app, targets):
+        self._app = app
+        self._targets = targets
+        # we'll need this a lot but only need to generate it once
+        links = self.allLinks([
+                      target for target in targets
+                                if target['config'].get('menu', True)]
+                    , includeFilePath=True)
+        self._index = self._indexLinks(links)
+        self._endpointIndex = self._indexTargets(targets)
+
+    def _indexLinks(self, links):
+        index = {}
+        for endpoint, viewArgs, filePath in links:
+            if endpoint not in index:
+                index[endpoint] = {}
+            viewArgsKey = frozenset(viewArgs.items())
+            index[endpoint][viewArgsKey] = filePath
+        return index
+
+    def _indexTargets(self, targets):
+        index = {}
+        for target in targets:
+            endpoint = target['endpoint']
+            indexEndpoint = target['indexEndpoint']
+            if endpoint in index:
+                raise ValueError('endpoint "{0}" is not unique'.format(endpoint))
+            if indexEndpoint in index:
+                 raise ValueError('indexEndpoint "{0}" is not unique'.format(indexEndpoint))
+            index[endpoint] = target
+            index[indexEndpoint] = target
+        return index
+
+    def _getLinkMetaData(self, endpoint, viewArgsKey, *default):
+        if endpoint not in self._index:
+            if len(default):
+                return default[0]
+            raise KeyError('No endpoint "{0}"'.format(endpoint))
+        if viewArgsKey not in self._index[endpoint]:
+            if len(default):
+                return default[0]
+            raise KeyError('No entry in endpoint "{0}" for key "{1}"'.format(endpoint, viewArgsKey))
+        filePath = self._index[endpoint][viewArgsKey]
+        fileItem = app.config['fileDataCache'].get(filePath)
+        return filePath, fileItem
+
+    def _url_for(self, *args, **kwds):
+        return self._app.jinja_env.globals['url_for'](*args, **kwds)
+
+    def isActive(self, endpoint, viewArgs):
+        return request.endpoint == endpoint and request.view_args == viewArgs
+
+    def allLinks(self, targets=None, includeFilePath=False):
+        if targets is None:
+            targets = self._targets
+        for target in targets:
+            if includeFilePath:
+                # filePath can be used to get (lazyly fetched and cached)
+                # metadata for the file
+                yield from genericURLGenerator(target)
                 continue
-            for filename in files:
-                yield from getEndpoints(target, filename)
-            for filename in target['config'].get('file_map', {}):
-                yield from getEndpoints(target, filename, checkFileMap=False)
+            for endpoint, values, filePath in genericURLGenerator(target):
+                yield endpoint, values
+
+    def _getLinkName(self, endpoint, viewArgsKey):
+        meta = self._getLinkMetaData(endpoint, viewArgsKey)
+        if meta is not None:
+            filePath, fileItem = meta
+            title = fileItem.setup.get('link_name', None)
+            if title is not None:
+                return title
+
+        target = self._endpointIndex[endpoint]
+        if target['indexEndpoint'] == endpoint:
+            return target['config'].get('index_link_name', '{0}/'.format(target['endpoint']))
+
+        return '{0}/{1}'.format(endpoint, dict(viewArgsKey).get('filename', ''))
+
+    def getLink(self, endpoint, **viewArgs):
+        return self._getLink(endpoint, None, viewArgs)
+
+    def _getFileItem(self, endpoint, viewArgsKey):
+        _, fileItem = self._getLinkMetaData(request.endpoint, viewArgsKey, (None, None))
+        return fileItem
+
+    def getFileItem(self, endpoint, **viewArgs):
+        viewArgsKey = frozenset(viewArgs.items())
+        return self._getFileItem(endpoint, viewArgsKey)
+
+    @property
+    def fileItem(self):
+        """ current file item """
+        return self.getFileItem(request.endpoint, **request.view_args)
+
+    def _getLink(self, endpoint, viewArgsKey, viewArgs):
+        if viewArgsKey is not None:
+            # if both are not None, viewArgsKey wins
+            viewArgs = dict(viewArgsKey)
+        elif viewArgs is not None:
+            viewArgsKey = frozenset(viewArgs.items())
+        else:
+            raise ValueError('One of viewArgsKey or viewArgs must be set.')
+
+        name = self._getLinkName(endpoint, viewArgsKey)
+        url = self._url_for(endpoint, **viewArgs)
+        active = self.isActive(endpoint, viewArgs)
+        return url, name, active
+
+    def _sortName(self, linkdata):
+        return self._getLinkName(*linkdata)
+
+    def _sortCTime(self,linkdata):
+        filePath, fileItem = self._getLinkMetaData(*linkdata)
+        return fileItem.times[0]
+
+    def _sortMTime(self,linkdata):
+        filePath, fileItem = self._getLinkMetaData(*linkdata)
+        return fileItem.times[1]
+
+    def _getSortKeyFunction(self, sortorder):
+        return ({
+            'name': self._sortName
+          , 'ctime': self._sortCTime
+          , 'mtime': self._sortMTime
+        })[sortorder]
+
+    def get(self, endpoints=None, sortorder='default', reverse=False):
+        # todo: this should be more structured
+        # all links of an endpoint should be yielded subsequently
+        # and all links within in an endpoint should be sorted (name->alphabet, ctime, mtime)
+
+        if endpoints is None:
+            endpoints = sorted(self._index.keys())
+
+        for endpointName in endpoints:
+
+            endpoint = self._index[endpointName]
+            links = [(endpointName, viewArgsKey) for viewArgsKey in endpoint.keys()]
+
+            # determine how to sort
+            if sortorder == 'default':
+                target = self._endpointIndex[endpointName]
+                sortorder = target['config'].get('sortorder', 'name')
+
+            # sort
+            if sortorder is not None:
+                links = sorted(links, key=self._getSortKeyFunction(sortorder), reverse=reverse)
+            elif reverse:
+                links = reversed(links)
+
+            for endpointName, viewArgsKey in links:
+                yield self._getLink(endpointName, viewArgsKey, None)
+
 
 if __name__ == '__main__':
     # first argument sets rootpath
     rootpath = sys.argv[-1] if len(sys.argv) >= 2 else os.getcwd()
     app, targets = makeApp(rootpath)
 
-    # we'll need this to make menus
-    ALL_LINKS = list(genericURLGenerator(targets));
-    app.config.update(ALL_LINKS=ALL_LINKS)
+    menu = Menu(app, targets)
+
+    @app.context_processor
+    def inject_globals():
+        return dict(
+            menu=menu
+          , dir=dir
+        )
 
     if len(sys.argv) >= 3:
         app.config.update(
@@ -345,7 +642,7 @@ if __name__ == '__main__':
                            # way we can create some endpoints pro forma
                            # without yielding 404 errors.
                          , with_no_argument_rules=False)
-        freezer.register_generator(partial(iter, ALL_LINKS))
+        freezer.register_generator(menu.allLinks)
         freezer.freeze()
     else:
         app.run(debug=True)

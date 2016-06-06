@@ -124,9 +124,12 @@ configuration.
 
 ```
 # http://flask.pocoo.org/docs/0.10/installation/#installation
-Atem-Project/website/generator$ virtualenv venv
-Atem-Project/website/generator$ . venv/bin/activate
-Atem-Project/website/generator$ pip install Flask
+# Atem-Project/website/generator$ virtualenv venv
+# need py >=3 anyway, so pyvenv seems better than virtualenv
+# Atem-Project$ pyvenv-3.5 website/generator/venv
+Atem-Project$ . website/generator/venv/bin/activate
+Atem-Project$ pip install wheel
+Atem-Project$ pip install Flask
 Atem-Project$ pip install pyyaml
 Atem-Project$ pip install misaka # markdown
 Atem-Project$ pip install houdini.py # html escaping in mardow synax highlighter
@@ -159,8 +162,16 @@ are not overridden by the app.
 Datatypes in the configuration can specify their own templates, and maybe
 the document *custom template variables* could even override that.
 
+# Menus
 
-
+We have a list of all links available from the url generator for Frozen Flask
+That is a great way to create one unified menu class, that basically can
+render the whole sitemap as a nested menu, marking the currently displayed
+page as the active one.
+There will be a way, like selectors, to define which menus should be output,
+so we can show different menus on different pages.
+The menu class will not actually render the links, instead it will just provide
+structure and contents. The Rendering will be done in jinja2 templates.
 
 
 
