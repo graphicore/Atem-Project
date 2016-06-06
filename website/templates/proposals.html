@@ -1,8 +1,4 @@
 {% extends "standard.html" %}
-{% block title %}{{ title }} | Proposals | Atem Project{% endblock %}
-{% block header %}
-<header>
-    <h1>Atem Project: Proposals</h1>
-    <hr />
-</header>
-{% endblock %}
+{% from 'stdlib.html' import rendermenu with context %}
+{% block title %}{{ title }} | Proposals | Atem Tooling Expressive Models{% endblock %}
+{% block footer %}<nav>{{rendermenu(['content/Proposals'])}}</nav>{% endblock %}
