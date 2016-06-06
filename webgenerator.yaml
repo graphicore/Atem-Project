@@ -8,6 +8,8 @@ source_defaults:
         txt: null
         # this makes nice filenames, like index.html for an "index" file
         '': {type: 'htmlpart'}
+    docs_menu: False
+    user_menu: False
 targets:
     # the keys are the target directories
     # this is the website root directory
@@ -26,16 +28,37 @@ targets:
             # in one of the file_map entries and on that base reject the
             # request
             index: index.md
+        user_menu: True
+        index_link_name: Atem Project
+    files:
+        source: website/static
+        renderer: static
+        menu: false
+        # I'd like to get rid of this via the config of renderer: static
+        suffix: ''
+        # maxdepth: Infinity
     # not sure if I'm going to keep the "content" target as it
     # but it's good for the moment
-    content:
-        # overwrite the source dir to be the directory root
-        source: '' # this is the repository root
-        # defaults to float('inf') and 0 turns the input channel effectively off
-        maxdepth: 1
+    news:
+        # there will be also an atom feed used with this source
+        source: website/news
+        template: blogpost.html
+        file_map:
+            index: index.md
         types:
-            # only markdown
             md: null
+        content:
+        maxdepth: 1
+        user_menu: True
+    content/Concepts:
+        source: Concepts
+        file_map:
+            index: README.md
+        types:
+            # only md, all concepts are meant to be in this format
+            md: null
+        docs_menu: True
+        index_link_name: Concepts
     # These keys are paths from the repository root to directories.
     # They may contain slashes
     content/Proposals:
@@ -46,3 +69,14 @@ targets:
         types:
             # only md, all proposals are meant to be in this format
             md: null
+        docs_menu: True
+        index_link_name: Proposals
+    content/Manuals:
+        source: Manuals
+        file_map:
+            index: README.md
+        types:
+            # only md, all concepts are meant to be in this format
+            md: null
+        docs_menu: True
+        index_link_name: Manuals
