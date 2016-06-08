@@ -1,0 +1,78 @@
+@import url(https://fonts.googleapis.com/css?family=Alegreya+Sans:400,700,900,400italic,700italic,900italic);
+
+html {
+   font-family: 'Alegreya Sans', sans-serif;
+   overflow-y: scroll;
+}
+body {
+   max-width: 1000px;
+   margin: 0 auto;
+}
+
+header h1 {
+   text-align: center;
+   margin: .5em 0 0 0;
+}
+
+h1 {
+   font-weight: 900;
+   letter-spacing: .02em;
+   font-size: 1.6em;
+}
+
+article {
+   /* A line of text should not be too long */
+   max-width: 40em;
+   line-height: 1.3em;
+}
+
+header{
+   border-bottom: 3px solid black;
+}
+
+header h1 img.logo {
+   width:220px
+}
+
+header .main-menu ul,
+header .main-menu li {
+   display: inline-block;
+   padding: 0;
+   margin: 0;
+}
+
+header .main-menu a {
+   text-decoration: none;
+   display: inline-block;
+   font-size: 1.3em;
+   padding: .3em .5em;
+   margin-right: .1em;
+
+}
+
+header .main-menu .top-level > li > a {
+   background: black;
+   color: white;
+   font-weight: bold;
+}
+header .main-menu .top-level > li a:hover,
+header .main-menu .sub-level li a:hover {
+   background: grey;
+}
+
+
+header .main-menu .sub-level li a {
+   background: white;
+   color: black;
+}
+
+
+.active > a {
+    font-weight: bold;
+}
+.main-menu .active > a,
+header .main-menu .top-level > li.active > a {
+    font-weight: 900;
+    letter-spacing: .01em;
+}
+

@@ -1,22 +1,127 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Atem—Tooling Expressive Models | Breathing live into software.</title>
+    <meta charset="utf-8" />
+    <title>index | Atem Tooling Expressive Models</title>
+    
+
+<link rel="stylesheet" type="text/css"
+      href="files/main.css" />
+
+
 </head>
 <body>
-<h1>Atem—Tooling Expressive Models</h1>
-<h3>Breathing live into software.</h3>
-<p>
-Atem will begin as a collection of projects split out of the Metapolator code base to eventually form the base of Metapolator.
-Atem will make Metapolator-Technology easily accessible and usable for anyone.
-</p> 
-<p>This is just a placeholder and will be populated soon. In the meantime you can visit some related websites:</p>
+  
+
+
+
+<header>
+    <h1><img class="logo" alt="Atem Tooling Expressive Models" src="files/Atem-Logo.svg" /></h1>
+    <nav class="main-menu">
+        <ul class="top-level"><!--
+        --><li class="active">
+            <a href="index.html">Atem Project</a>
+            </li><!----><li class="sub-level"><ul><!--
+        --><li class="">
+        <a href="news/index.html">News</a></li><!--
+        --><li class="">
+        <a href="vision.md.html">Vision</a></li><!--
+        --><li class="">
+        <a href="contribute.md.html">Contribute</a></li><!----></ul></li><!----><!--
+        --><li class="">
+            <a href="docs.md.html">Documentation</a>
+            </li><!----><!--
+        --><li class="">
+            <a href="help.md.html">Help</a>
+            </li><!----><!----></ul>
+    </nav>
+</header>
+
+  
+<article><h1>Atem-Project</h1>
+
+<p><strong>A</strong>tem—<strong>T</strong>ooling <strong>E</strong>xpressive <strong>M</strong>odels: This is the central hub of the project and <a href="./tree/gh-pages">host</a> of its website. We will guide the project (documentation, discussions, community, roadmaps etc.) from here.</p>
+
+<p>Use the issue-tracker of this Github repository to discuss any questions/topics about Atem.</p>
+
+<h2>Contribute?</h2>
+
+<p>A beginning of project management is in <a href="./tasks.md">tasks.md</a>. If you see yourself fit to work on one of the tasks, please contact us!</p>
+
+<h2>The Atem-Project is a collection of sub-projects:</h2>
+
+<p>The separation into Applications, Main Libraries and Basic/Helper Libraries is somewhat arbitrary, don&#39;t derive to much meaning from it.</p>
+
+<h3>Applications</h3>
+
 <ul>
-<li><a href="https://github.com/graphicore/Atem-Project">Atem on GitHub</a></li>
-<li><a href="http://metapolator.com">Metapolator</a></li>
-<li><a href="https://plus.google.com/u/0/communities/110027004108709154749">Metapolator G+ Community</a></li>
+<li><a href="https://github.com/metapolator/metapolator">Metapolator</a>: Design fonts and font families faster; Metapolator is the origin of Atem (<a href="http://metapolator.com">website</a>).</li>
+<li><a href="https://github.com/metapolator/Atem-MOM-Developer-Tool">Atem-MOM-Developer-Tool</a>: graphical inspection and manipulation of CPS and the Metapolator Object Model.</li>
+<li><a href="https://github.com/graphicore/Bauhaus-Emblem-Font">Bauhaus-Emblem-Font</a>: Technology demo, learning tool, next generation (type-)design Application.</li>
 </ul>
-<p>See you soon.<p/>
+
+<h3>Main Libraries</h3>
+
+<p>The building blocks for Atem-Applications.</p>
+
+<ul>
+<li><a href="https://github.com/graphicore/ufoJS/">ufoJS</a>: Javascript API for the <strong>U</strong>nified <strong>F</strong>ont <strong>O</strong>bject (<a href="http://lib.ufojs.org">website</a>).</li>
+<li><a href="https://github.com/graphicore/Atem-IO">Atem-IO</a>: simple, unified input/outout API for JavaScript. Includes API adapters and tools.</li>
+<li><a href="https://github.com/graphicore/Atem-Pen-Case">Atem-Pen-Case</a>: JavaScript API-implementation of the Segment-Pen-Protocol and Point-Pen-Protocol plus a collection of pens.</li>
+<li><a href="https://github.com/graphicore/Atem-Property-Language">Atem-Property-Language</a>: Language to define CPS property values; includes the formulae language of Atem-MOM.</li>
+<li><a href="https://github.com/graphicore/Atem-CPS">Atem-CPS</a>: CPS—<strong>C</strong>ascading <strong>P</strong>roperties <strong>S</strong>heets and OMA—<strong>O</strong>bject <strong>M</strong>odel <strong>A</strong>PI</li>
+<li><a href="https://github.com/graphicore/Atem-MOM">Atem-MOM</a>: MOM—<strong>M</strong>etapolator <strong>O</strong>bject <strong>M</strong>odel</li>
+<li><a href="https://github.com/graphicore/obtainJS">obtainJS</a>: Framework to unify synchronous and asynchronous JavaScript.</li>
+<li><a href="https://github.com/graphicore/Atem-CPS-Developer-Tool">Atem-CPS-Developer-Tool</a>: graphical user interface tools for CPS and the OMA on a generic level. (currently uses just as library not as application)</li>
+<li><a href="https://github.com/graphicore/Atem-CPS-Toolkit">Atem-CPS-Toolkit</a>: shared tools used to render the CPS/OMA in user interfaces.</li>
+<li><a href="https://github.com/graphicore/Atem-MOM-Toolkit">Atem-MOM-Toolkit</a>: shared tools used to render the Metapolator Object Model in user interfaces.</li>
+</ul>
+
+<h3>Basic/Helper Libraries</h3>
+
+<p>These are libraries that are used throughout many of the Atem projects more infrastructure than innovation.</p>
+
+<ul>
+<li><a href="https://github.com/graphicore/Atem-Errors">Atem-Errors</a>: Library commonly used by Atem-Project for Error-Class creation.</li>
+<li><a href="https://github.com/graphicore/Atem-CPS-whitelisting">Atem-CPS-whitelisting</a>: Atem Project: lightweight dependency to prepare objects for usage within Atem-CPS; whitelisting accessible properties.</li>
+<li><a href="https://github.com/graphicore/Atem-Math-Tools">Atem-Math-Tools</a>: Collection of (2d graphics) math modules used in Atem.</li>
+<li><a href="https://github.com/graphicore/Atem-RequireJS-Config/">Atem-RequireJS-Config</a>: common RequireJS configuration for all Atem sub-projects.</li>
+<li><a href="https://github.com/graphicore/%20Atem-Logging">Atem-Logging</a>: Versatile logging facility based on util-logging adding some specifics for Atem.</li>
+</ul>
+</article>
+
+  
+<h3>sitemap</h3>
+<nav><ul>
+<!-- This is an initial poor-mans sitemap -->
+
+    <li class="">
+    <a href="docs.md.html">Documentation</a></li>
+    <li class="">
+    <a href="help.md.html">Help</a></li>
+    <li class="">
+    <a href="contribute.md.html">__root__/contribute.md</a></li>
+    <li class="">
+    <a href="vision.md.html">__root__/vision.md</a></li>
+    <li class="active">
+    <a href="index.html">Atem Project</a></li>
+    <li class="">
+    <a href="content/Concepts/index.html">Concepts</a></li>
+    <li class="">
+    <a href="content/Manuals/index.html">Manuals</a></li>
+    <li class="">
+    <a href="content/Proposals/api-documentation-generator.md.html">content/Proposals/api-documentation-generator.md</a></li>
+    <li class="">
+    <a href="content/Proposals/website-generator.md.html">content/Proposals/website-generator.md</a></li>
+    <li class="">
+    <a href="content/Proposals/index.html">Proposals</a></li>
+    <li class="">
+    <a href="news/testing1.md.html">news/testing1.md</a></li>
+    <li class="">
+    <a href="news/testing2.md.html">news/testing2.md</a></li>
+    <li class="">
+    <a href="news/index.html">news/</a></li>
+</ul></nav>
+
 </body>
 </html>
