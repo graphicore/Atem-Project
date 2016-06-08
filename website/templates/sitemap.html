@@ -15,7 +15,7 @@
         A template endpoint may have a feedEndpoint
     #}
     <h3>{% if target['indexEndpoint'] %}
-        {% set link = menu.getLink(target['indexEndpoint'], False, None) %}
+        {% set link = menu.getLink(target['indexEndpoint'], False, default=None) %}
         {% if link %}
             {% set url, name, active = link %}
             <a href="{{url}}">{{name}}</a>
@@ -24,7 +24,7 @@
     {{ target['endpoint'] == '__root__' and '{home}' or target['endpoint'] }}
     </h3>
     {% if target['feedEndpoint'] %}
-        {% set link = menu.getLink(target['feedEndpoint'], False, None) %}
+        {% set link = menu.getLink(target['feedEndpoint'], False, default=None) %}
         {% if link %}
             <div>
             {% set url, name, active = link %}
@@ -37,7 +37,7 @@
     {#
         A file less endpoint, these are currently just single links
     #}
-    <h3>{% set url, name, active = menu.getLink(target['endpoint'], False, None) %}
+    <h3>{% set url, name, active = menu.getLink(target['endpoint'], False) %}
             <a href="{{url}}">{{name}}</a>
     {{ target['endpoint'] == '__root__' and '{home}' or target['endpoint'] }}
     </h3>

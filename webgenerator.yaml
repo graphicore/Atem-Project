@@ -24,7 +24,6 @@ targets:
     files:
         source: website/static
         renderer: static
-        no_sitemap: True
         menu: False # not part of the menu and sitemap
     sitemap.html:
         renderer: fileless
@@ -51,6 +50,7 @@ targets:
         sortorder: ctime
     content/Concepts:
         source: Concepts
+        template: docs.html
         file_map:
             index.html: README.md
         types:
@@ -62,7 +62,7 @@ targets:
     # They may contain slashes
     content/Proposals:
         source: Proposals
-        template: proposals.html
+        template: docs.html
         file_map:
             index.html: README.md
         types:
@@ -72,6 +72,7 @@ targets:
         index_link_name: Proposals
     content/Manuals:
         source: Manuals
+        template: docs.html
         file_map:
             index.html: README.md
         types:
@@ -81,6 +82,7 @@ targets:
         index_link_name: Manuals
     content/Docs:
         source: Docs
+        template: docs.html
         file_map:
             index.html: README.md
         types:

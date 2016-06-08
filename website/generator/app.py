@@ -136,17 +136,19 @@ def prepareContent(contentType, content, context):
                                                         .format(contentType))
     return content
 
+_defaultMarker = object()
+
 class FileDataCache(object):
     def __init__(self):
         self._files = {}
 
-    def get(self, path, *default):
+    def get(self, path, default=_defaultMarker):
         f = self._files.get(path, None)
         if f is None:
             success, content, setup = readSourceFile(path)
             if not success:
-                if len(default):
-                    return default[0]
+                if default is not _defaultMarker:
+                    return default
                 raise KeyError('Can\'t read file at "{0}".'.format(path))
             f = self._files[path] = FileCacheItem(path, content, setup)
         return f
@@ -693,14 +695,14 @@ class Menu(object):
                 index[endpoint] = target
         return index
 
-    def _getLinkMetaData(self, endpoint, viewArgsKey, *default):
+    def _getLinkMetaData(self, endpoint, viewArgsKey, default=_defaultMarker):
         if endpoint not in self._index:
-            if len(default):
-                return default[0]
+            if default is not _defaultMarker:
+                return default
             raise KeyError('No endpoint "{0}"'.format(endpoint))
         if viewArgsKey not in self._index[endpoint]:
-            if len(default):
-                return default[0]
+            if default is not _defaultMarker:
+                return default
             print('>>>', self._index[endpoint].keys())
             raise KeyError('No entry in endpoint "{0}" for key "{1}"'.format(endpoint, viewArgsKey))
         filePath = self._index[endpoint][viewArgsKey]
@@ -735,7 +737,7 @@ class Menu(object):
                 else:
                     yield endpoint, values
 
-    def _getLinkName(self, endpoint, viewArgsKey):
+    def _getLinkName(self, endpoint, viewArgsKey, endpointName=None):
         meta = self._getLinkMetaData(endpoint, viewArgsKey)
         if meta is not None:
             filePath, fileItem = meta
@@ -744,19 +746,25 @@ class Menu(object):
                 return title
 
         target = self._endpointIndex[endpoint]
+        if endpointName is None:
+            endpointName = target['endpoint']
         if target.get('indexEndpoint', None) == endpoint:
-            return target['config'].get('index_link_name', '{0}/'.format(target['endpoint']))
+            return target['config'].get('index_link_name', '{0}/'.format(endpointName))
 
-        if target.get('feedEndpoint', None) != endpoint and 'source' in target:
-            return '{0}/{1}'.format('' if endpoint == '__root__' else endpoint, dict(viewArgsKey).get('filename', ''))
-        return target['config'].get('link_name', '/' if endpoint == '__root__' else  endpoint)
+        if target.get('feedEndpoint', None) == endpoint:
+            pass
+        elif 'source' in target:
+            # indicates a filename using enpoint
+            return '{0}/{1}'.format('' if endpoint == '__root__' else endpointName, dict(viewArgsKey).get('filename', ''))
+        # feedEndpoint or fileless renderer
+        return target['config'].get('link_name', '/' if endpoint == '__root__' else endpointName)
 
 
-    def getLink(self, endpoint, include_meta=False, *default, **viewArgs):
+    def getLink(self, endpoint, include_meta=False, default=_defaultMarker, endpointName=None, **viewArgs):
         try:
-            return self._getLink(endpoint, None, viewArgs, include_meta)
+            return self._getLink(endpoint, None, viewArgs, include_meta, endpointName=endpointName)
         except KeyError as e:
-            if len(default): return default[0]
+            if default is not _defaultMarker: return default
             raise e
 
     def _getFileItem(self, endpoint, viewArgsKey):
@@ -771,6 +779,10 @@ class Menu(object):
     def fileItem(self):
         """ current file item """
         return self.getFileItem(request.endpoint, **request.view_args)
+
+    @property
+    def target(self):
+        return self._endpointIndex[request.endpoint]
 
     @property
     def targets(self):
@@ -797,7 +809,7 @@ class Menu(object):
             if after: after = tuple(after[:-1])
         return previous, current, after
 
-    def _getLink(self, endpoint, viewArgsKey, viewArgs, include_meta):
+    def _getLink(self, endpoint, viewArgsKey, viewArgs, include_meta, endpointName=None):
         if viewArgsKey is not None:
             # if both are not None, viewArgsKey wins
             viewArgs = dict(viewArgsKey)
@@ -806,7 +818,7 @@ class Menu(object):
         else:
             raise ValueError('One of viewArgsKey or viewArgs must be set.')
 
-        name = self._getLinkName(endpoint, viewArgsKey)
+        name = self._getLinkName(endpoint, viewArgsKey, endpointName)
         url = self._url_for(endpoint, **viewArgs)
         active = self.isActive(endpoint, viewArgs)
 
@@ -840,7 +852,7 @@ class Menu(object):
           , 'mtime': self._sortMTime
         })[sortorder]
 
-    def get(self, endpoints=None, sortorder='default', reverse=False, include_meta=False):
+    def get(self, endpoints=None, sortorder='default', reverse=False, include_meta=False, endpointName=None):
         # todo: this should be more structured
         # all links of an endpoint should be yielded subsequently
         # and all links within an endpoint should be sorted (name->alphabet, ctime, mtime)
@@ -848,16 +860,16 @@ class Menu(object):
         if endpoints is None:
             endpoints = sorted(self._index.keys())
 
-        for endpointName in endpoints:
+        for key in endpoints:
 
-            endpoint = self._index.get(endpointName, None)
+            endpoint = self._index.get(key, None)
             if endpoint is None:
                 continue
-            links = [(endpointName, viewArgsKey) for viewArgsKey in endpoint.keys()]
+            links = [(key, viewArgsKey) for viewArgsKey in endpoint.keys()]
 
             # determine how to sort
             if sortorder == 'default':
-                target = self._endpointIndex[endpointName]
+                target = self._endpointIndex[key]
                 sortorder = target['config'].get('sortorder', 'name')
                 reverse = target['config'].get('sortreverse', reverse)
 
@@ -867,8 +879,8 @@ class Menu(object):
             elif reverse:
                 links = reversed(links)
 
-            for endpointName, viewArgsKey in links:
-                yield self._getLink(endpointName, viewArgsKey, None, include_meta)
+            for key, viewArgsKey in links:
+                yield self._getLink(key, viewArgsKey, None, include_meta, endpointName=endpointName)
 
 
 if __name__ == '__main__':

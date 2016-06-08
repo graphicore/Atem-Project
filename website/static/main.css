@@ -35,18 +35,37 @@ article.blogpost .content {
    max-width: 40em;
 }
 
+nav.sub, article.docs {
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+}
+
+nav.sub {
+   max-width: calc(100% - 40em);
+   min-width: 12em;
+}
+
+nav.sub ul{
+   margin: 0;
+   padding: 0;
+   list-style: inside;
+}
+
 article.sitemap {
    max-width: 100%;
 }
 
 article.standard,
 article.docs,
-article.blogpost > * {
+article.blogpost > *,
+nav.sub {
    padding: 0 .3em;
 }
 
 header.page{
    border-bottom: 3px solid black;
+   position: relative;
 }
 footer.page{
    border-top: 3px solid black;
@@ -55,10 +74,36 @@ footer.page{
    margin-top: 3em;
 }
 
-
-header.page h1 img.logo {
-   width:220px
+header.page a.connect {
+   position: absolute;
+   text-indent: 100%;
+   white-space: nowrap;
+   overflow: hidden;
+   background: no-repeat;
+   background-size: contain;
+   width: 25px;
+   height: 25px;
+   margin: 55px 5px 0 0;
+   right: 0;
 }
+
+header.page a.github {
+
+   background-image: url("GitHub-icon.svg");
+}
+header.page a.twitter {
+   background-image: url("Twitter-icon.svg");
+   top: 30px;
+}
+header.page a.feed {
+   background-image: url("Feed-icon.svg");
+   top: 60px;
+}
+header.page a.gplus {
+   background-image: url("Gplus-icon.svg");
+   top: 90px;
+}
+
 
 header .main-menu ul,
 header .main-menu li {

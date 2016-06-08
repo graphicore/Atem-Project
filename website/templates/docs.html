@@ -1,0 +1,13 @@
+{% extends "standard.html" %}
+{% from 'stdlib.html' import rendermenu with context %}
+{% block title %}{{ title }} | {{index_link_name}} | Atem Tooling Expressive Models{% endblock %}
+
+{% block body %}
+<nav class="sub">
+   <h3>All {{index_link_name or menu.target['endpoint']}}</h3>
+   {{rendermenu([menu.target['endpoint']], endpointName='.')}}
+</nav><!--
+--><article class="docs">
+{{ content }}
+</article>
+{% endblock %}

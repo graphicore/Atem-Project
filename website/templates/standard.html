@@ -35,9 +35,29 @@
             -->{{after|safe}}
     {%- endfor -%}
 {%- endmacro %}
-
 <header class="page">
-    <h1><img class="logo" alt="Atem Tooling Expressive Models" src="{{ url_for('files', filename='Atem-Logo.svg') }}" /></h1>
+        <a title="Atem-Project on GitHub"
+           class="connect github" target="_blank"
+           href="https://github.com/graphicore/Atem-Project"
+           >Atem-Project on GitHub</a>
+        <a title="@AtemProject on Twitter"
+           class="connect twitter"
+           target="_blank"
+           href="https://twitter.com/AtemProject"
+           >@AtemProject on Twitter</a>
+        <a title="Subscribe to the News Feed"
+           class="connect feed"
+           href="{{url_for('news.feed')}}"
+           >Subscribe to the  News Feed</a>
+        <a title="Metapolator on Google+"
+           class="connect gplus"
+           target="_blank"
+           href="https://plus.google.com/u/0/communities/110027004108709154749"
+           >Metapolator on Google+</a>
+    <h1><img style="width:220px;height:220px"
+             class="logo"
+             alt="Atem Tooling Expressive Models"
+             src="{{ url_for('files', filename='Atem-Logo.svg') }}" /></h1>
     <nav class="main-menu">
         <ul class="top-level"><!--
             {{- main_menu_items(
@@ -52,7 +72,7 @@
                                                       ('content/Concepts:index', None)
                                                     , ('content/Proposals:index', None)
                                                     , ('content/Manuals:index', None)
-                                                    , ('content/Proposals', {'filename': 'api-documentation-generator.md'}, 'API')
+                                                    , ('content/Proposals', {'filename': 'api-docs-generator.md'}, 'API')
                                                 )
                             )
                           , (('__root__', {'filename': 'help.md'}), help_menu, [

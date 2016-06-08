@@ -1,4 +1,8 @@
 {% extends "standard.html" %}
 {% from 'stdlib.html' import rendermenu with context %}
 {% block title %}{{ title }} | Proposals | Atem Tooling Expressive Models{% endblock %}
-{% block fooooooter %}<footer><nav>{{rendermenu(['content/Proposals'])}}</nav></footer>{% endblock %}
+
+{% block body %}
+<nav class="sub"><h3>All Documents</h3>{{rendermenu(['content/Proposals'], endpointName='.')}}</nav><!--
+--><article class="docs">{{ content }}</article>
+{% endblock %}

@@ -7,23 +7,24 @@ link_name: Documentation
 # Documenting Expressive Models
 
 Documentation on several levels is the single most important communication
-channel to help people in becoming contributors.
+channel.
 
 The time that is available to produce good documentation is however limited.
-Another factor is the up-to-dateness of documentation. Unless there's no reasonably
-stable state of a subject to be documented, it is pointless to put a lot of time into
+Another factor is the up-to-dateness of documentation. Unless there's no **reasonably
+stable state™** of a subject to be documented, it is pointless to put a lot of time into
 making documentation about it.
 
 ## How this is organized
 
-The structure of the **Documentation** pages mirrors this field of tension between
-the need of documentation versus the inability to provide up-to date adequate documentation.
+The structure of the documentation pages reflects the field of tension between
+the need of documentation versus the inability to provide up-to date adequate documentation
+in a rapidly changing project.
 
 * **[Concepts]({{url_for('content/Concepts:index')}})** contains a high level documentation to give an overview about architecture,
   design ideas etc. that is actually used in the project. This is meant to help understanding
   when diving into the code. Since this is very high level the documentation in here won't change
   so fast and it is more save to put time into writing it.
-* **Proposals** is our *main tool to drive progress* in the Atem-Project. These are documents that
+* **Proposals** is our *main tool to guide progress* in the Atem-Project. These are documents that
   describe the planning of additions, enhancements or changes to the project. They are the
   base of technical discussions and later guidance for the implementation. After implementation
   they will serve as documentation for the design choices that have been made.
