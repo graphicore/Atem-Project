@@ -1,15 +1,16 @@
 template_folder: website/templates
+freezer_config:
+    url_root: http://atem.graphicore.de
 source_defaults:
     suffix: '.html'
     types:
-        # what if I want to have a file like "index.md" end up as "index.html" ?
-        # at the moment this will become "index.md.html"
         md: null
         txt: null
-        # this makes nice filenames, like index.html for an "index" file
+        # this makes nice filenames, like index.html for a "index" file
         '': {type: 'htmlpart'}
     docs_menu: False
     user_menu: False
+    feed_author: {name: '@graphicore', uri: 'https://github.com/graphicore'}
 targets:
     # the keys are the target directories
     # this is the website root directory
@@ -47,9 +48,11 @@ targets:
             index: index.md
         types:
             md: null
-        content:
         maxdepth: 1
         user_menu: True
+        add_feed: True
+        feed_maxitems: 10
+        feed_title: Atem-Project News
     content/Concepts:
         source: Concepts
         file_map:

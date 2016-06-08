@@ -7,51 +7,72 @@
       href="{{ url_for('files', filename='main.css') }}" />
 
 {% endblock %}
+
+{% macro sub_menu_items(entries, before='', after='') -%}
+    {%- for entry in entries -%}
+        {%set url, name, active = menu.getLink(entry[0], **(entry[1] or {})) %}
+        {{before|safe}}<li class="{% if active %}active{% endif %}">
+        <a href="{{url}}">{{entry[2] or name}}</a></li>{{after|safe}}
+    {%- endfor -%}
+{%- endmacro %}
+
 {% block header %}
-<header>
+
+{% macro main_menu_items(entries, before='', after='') -%}
+    {%- for entry, use_submenu, submenu in entries -%}
+        {%set url, name, active = menu.getLink(entry[0], **(entry[1] or {})) %}
+        {{before|safe}}<li class="{% if active %}active{% endif %}">
+            <a href="{{url}}">{{name}}</a>
+            </li><!--
+            {%- if use_submenu and submenu -%}
+             --><li class="sub-level"><ul><!--
+                    {{- sub_menu_items(
+                        submenu
+                      , before='-->'
+                      , after='<!--'
+                    ) -}}
+             --></ul></li><!--
+            {%- endif -%}
+            -->{{after|safe}}
+    {%- endfor -%}
+{%- endmacro %}
+
+<header class="page">
     <h1><img class="logo" alt="Atem Tooling Expressive Models" src="{{ url_for('files', filename='Atem-Logo.svg') }}" /></h1>
     <nav class="main-menu">
-        <ul class="top-level">
-            {%set url, title, active = menu.getLink('__root__:index') %}
-            <li class="{% if active %}active{% endif %}">
-            <a href="{{url}}">{{title}}</a>
-            </li><!--
-            {% if user_menu %}
-             --><li class="sub-level"><ul>
-                    <li><a href="#">News</a></li><!--
-                 --><li><a href="#">Vision</a></li><!--
-                 --><li><a href="#">Contribute</a></li>
-                </ul></li><!--
-            {% endif %}
-            {%set url, title, active = menu.getLink('__root__', filename='docs.md') %}
-         --><li class="{% if active %}active{% endif %}">
-            <a href="{{url}}">{{title}}</a>
-            </li><!--
-            {% if docs_menu == True %}
-             --><li class="sub-level"><ul>
-                    <!--
-                    {% for endpoint, viewArgs in (
-                            ('content/Concepts:index', None)
-                          , ('content/Proposals:index', None)
-                          , ('content/Manuals:index', None)
-
-                    ) %}
-                    {%set url, title, active = menu.getLink(endpoint, **(viewArgs or {})) %}
-                    --><li class="{% if active %}active{% endif %}">
-                       <a href="{{url}}">{{title}}</a></li><!--
-                    {% endfor %}
-                    --><li><a href="#">API</a></li>
-                </ul></li><!--
-            {% endif %}
-         --><li class="sub-level"><ul><li><a href="#">Help</a></li></ul></li>
-        </ul>
+        <ul class="top-level"><!--
+            {{- main_menu_items(
+                        (
+                            (('__root__:index', None), user_menu, (
+                                                      ('news:index', None, 'News')
+                                                    , ('__root__', {'filename': 'vision.md'}, 'Vision')
+                                                    , ('__root__', {'filename': 'contribute.md'}, 'Contribute')
+                                                )
+                            )
+                          , (('__root__', {'filename': 'docs.md'}), docs_menu, (
+                                                      ('content/Concepts:index', None)
+                                                    , ('content/Proposals:index', None)
+                                                    , ('content/Manuals:index', None)
+                                                    , ('content/Proposals', {'filename': 'api-documentation-generator.md'}, 'API')
+                                                )
+                            )
+                          , (('__root__', {'filename': 'help.md'}), help_menu, [])
+                        )
+                      , before='-->'
+                      , after='<!--'
+            ) -}}
+        --></ul>
     </nav>
 </header>
 {% endblock %}
 {% block body %}
-<article>{{ content }}</article>
+<article class="standard">{{ content }}</article>
 {% endblock %}
-{% block footer %}
-<h3>sitemap</h3>
-<nav>{{rendermenu()}}</nav>
+{% block footer %}<footer class="page">
+<nav>
+    <a href="#">Sitemap</a>
+    <a href="#">Impressum</a>
+    © <a href="https://github.com/graphicore/Atem-Project">The Atem-Project Authors</a>
+</nav>
+</footer>
 {% endblock %}

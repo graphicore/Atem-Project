@@ -1,0 +1,53 @@
+{% extends "standard.html" %}
+
+{% macro render_link(link_data, label=None, class='') -%}
+    {% set url, name, active, meta = link_data %}
+    {%- set fileItem =  meta['fileItem'] -%}
+    {%- set datetime, setup = fileItem.times[0], fileItem.setup -%}
+    {%- set title = setup['title'] or name -%}
+        <a class="{{class}}" href="{{url}}" title="{{title}} {{datetime}}">{{label or title}}</a>
+{%- endmacro %}
+
+
+{% macro render_relative_nav(previous, next) -%}
+<nav class="relative">
+    {%- if previous -%}
+        {{ render_link(previous, label='Previous Post', class='previous') }}
+    {%- endif -%}
+    {%- if next -%}
+        {{ render_link(next, label='Next Post', class='next') }}
+    {%- endif -%}
+</nav>
+{%- endmacro %}
+
+{% block body %}
+{%- set previous, current, next = menu.getAdjacentLinks(sortorder='ctime', reverse=False, include_meta=True) -%}
+{%- set url, name, active, meta = current -%}
+{%- set fileItem =  meta['fileItem'] -%}
+{%- set datetime = fileItem.times[0] -%}
+<article class="blogpost">
+<header>
+    {{ render_relative_nav(previous, next) }}
+    <h1>{{title or name}}</h1>
+    {%- if not author -%}
+    {%- set author = feed_author -%}
+    {%- endif %}
+    by
+    {% if author['uri'] -%}
+        <a class="author" href="{{author['uri']}}" rel="author">{{author['name']}}</a>
+    {%- else -%}
+        <span class="author">{{author['name']}}</span>
+    {%- endif %}
+    on <time datetime="{{datetime}}">{{datetime}}</time>
+    {% if summary %}
+    <p class="summary">{{summary}}</p>
+    {% endif%}
+</header>
+<div class="content">
+{{ content }}
+</div>
+<footer>
+    {{ render_relative_nav(previous, next) }}
+</footer>
+</article>
+{% endblock %}

@@ -9,6 +9,7 @@ from flask import Flask, abort, request, Markup, render_template, url_for \
                 , send_from_directory, render_template_string
 from flask_frozen import Freezer, relative_url_for
 from werkzeug.contrib.atom import AtomFeed
+from urllib.parse import urljoin
 import jinja2
 import yaml
 
@@ -178,7 +179,7 @@ class FileCacheItem(object):
         datetime.fromtimestamp(float(timestamp))
 
     def _getStatDates(self, filename):
-        statData = os.stat(self.filename)
+        statData = os.stat(filename)
         return tuple([datetime.fromtimestamp(statData[i])
                             for i in (stat.ST_CTIME, stat.ST_MTIME)])
 
@@ -258,6 +259,19 @@ def staticRenderer(config, fileData):
         raise e
     return result
 
+
+def renderContent(config, typeData, fileItem):
+    typeSetup = typeData['typeSetup']
+    typeKey = typeData['typeKey']
+    contentType = typeSetup.get('type', typeKey)
+
+    context = {}
+    for item in [config, typeSetup, fileItem.setup]:
+        if item: context.update(item)
+
+    content = prepareContent(contentType, fileItem.content, context)
+    return content, context
+
 def templatedRenderer(config, fileData):
     fileItem = app.config['fileDataCache'].get(fileData['filePath'], None)
 
@@ -265,17 +279,11 @@ def templatedRenderer(config, fileData):
         # the file actually does not exist!
         abort(404)
 
-    typeSetup = fileData['typeSetup']
-    typeKey = fileData['typeKey']
-    contentType = typeSetup.get('type', typeKey)
-
-    context = {}
-    for item in [config, typeSetup, fileItem.setup]:
-        if item: context.update(item)
+    content, context = renderContent(config, fileData, fileItem)
 
     viewVars = {
         'title': fileData['filename']
-      , 'content': prepareContent(contentType, fileItem.content, context)
+      , 'content': content
     }
     viewVars.update(context)
     template = viewVars.get('template', 'standard.html')
@@ -311,6 +319,76 @@ def render(rendererName, app, endpointConfig, pathsparts, filename):
     for item in [app.config, endpointConfig]:
         config.update(item)
     return fn(config, fileData)
+
+def feed_view(app, config, endpoint, indexEndpoint):
+    menu = app.config['menu']
+    defaultAuthor = config.get('feed_author', None)
+    # We need to configure a url_root when freezing!
+    # This is best app wide config
+    url_root = app.config.get('url_root', request.url_root)
+    print('url_root', url_root)
+    feed_title = config.get('feed_title', 'Feed for: {0}'.format(endpoint))
+    # as id and link rel="self"
+    feed_url = urljoin(url_root, request.path)
+    # where to find the html version
+    url = urljoin(url_root, url_for(indexEndpoint))
+
+    feedArgs = dict(feed_url=feed_url, url=url)
+    if defaultAuthor is not None:
+        feedArgs['author'] = defaultAuthor
+    feed = AtomFeed(feed_title, **feedArgs)
+
+    i = 0
+    maxitems = config.get('feed_maxitems', 10)
+    for url, name, active, meta in menu.get([endpoint], sortorder='ctime',
+                                    reverse=True, include_meta=True):
+        i += 1
+        if i >= maxitems: break
+
+        # use the unpatched url_for to get a complete path
+        # menu uses the version provided by frozen flask
+        abs_url = url_for(meta['endpoint'], **meta['viewArgs'])
+        app_root_path = abs_url[:-len(url)]
+
+        if url[0] == '/':
+            url = url[1:]
+        xml_base = urljoin(url_root, app_root_path)
+        fileItem = meta['fileItem']
+        published, updated = fileItem.times
+
+        _, typeData = checkTypeSetup(config, meta['viewArgs']['filename'])
+        content, _ = renderContent(config, typeData, fileItem)
+
+        global_url = urljoin(xml_base, url)
+
+        feedData = dict(
+              title = fileItem.setup.get('title', name)
+            , content = content
+            , content_type = 'html'
+            , url = global_url
+            , published = published
+            , updated = updated
+            , xml_base = xml_base
+            , id = global_url
+        )
+        summary = title = fileItem.setup.get('summary', None)
+        if summary is not None:
+            feedData.update(
+                summary=summary
+                , summary_type='text'
+            )
+
+        # TODO: fileItem could get the committers name/email from git possibly
+        author = fileItem.setup.get('author', None)
+
+        if author is None and defaultAuthor is None:
+            # Required if the feed does not have an author element.
+            author = '(unknown author)'
+        if author is not None:
+            feedData['author'] = author
+
+        feed.add(**feedData)
+    return feed.get_response()
 
 def buildRoutes(rootpath, app, config, parent=None):
     targets = []
@@ -365,18 +443,28 @@ def buildRoutes(rootpath, app, config, parent=None):
         )
         app.add_url_rule(indexRule, indexEndpoint, viewFunc)
 
+        feedEndpoint = None
+        if targetConfig.get('add_feed', False):
+            feedRule = '/{target}feed.atom'.format(target=targetToken)
+            feedEndpoint = endpoint + '.atom'
+            viewFunc = partial( feed_view
+                              , app
+                              , targetConfig
+                              , endpoint
+                              , indexEndpoint
+            )
+            app.add_url_rule(feedRule, feedEndpoint, viewFunc)
         targets.append({
             'rendererName': rendererName
           , 'config': targetConfig
           , 'endpoint': endpoint
           , 'indexEndpoint': indexEndpoint
+          , 'feedEndpoint': feedEndpoint # may be None
           , 'suffix': suffix
           , 'source': source
           , 'pathparts': pathparts
         })
-
     return targets;
-
 
 def makeApp(rootpath, configFileName='webgenerator.yaml'):
     # If configFileName is unusable for any reason we want this to fail
@@ -400,11 +488,13 @@ def makeApp(rootpath, configFileName='webgenerator.yaml'):
         app.jinja_loader = jinja2_loader
     targets = buildRoutes(rootpath, app, config)
     app.config['fileDataCache'] = FileDataCache()
-    return app, targets
-
+    menu = Menu(app, targets)
+    app.config['menu'] = menu
+    app.config['generator_config'] = config
+    return app, menu
 
 # Todo: make url generators for the defined targets using the configuration
-def getEndpoints(target, filename, checkFileMap=True):
+def specificURLGenerator(target, filename, checkFileMap=True):
     config = target['config']
     pathparts = target['pathparts']
 
@@ -439,6 +529,7 @@ def genericURLGenerator(target):  # Some other function name
           , 'config': targetConfig
           , 'endpoint': endpoint
           , 'indexEndpoint': indexEndpoint
+          , 'feedEndpoint': feedEndpoint # may be None
           , 'suffix': suffix
           , 'source': source
           , 'pathparts': pathparts
@@ -448,8 +539,9 @@ def genericURLGenerator(target):  # Some other function name
     if maxDepth == 0:
         return
     # http://stackoverflow.com/questions/229186/os-walk-without-digging-into-directories-below
-    for root, dirs, files in os.walk('.' if target['source'] == '' else target['source']):
-        depth = root.count(os.path.sep) + 1
+    source = '.' if target['source'] == '' else target['source']
+    for root, dirs, files in os.walk(source):
+        depth = root.count(os.path.sep) + 1 - source.count(os.path.sep)
         if depth >= maxDepth:
             # This is a the magic piece, it modifies the list that is
             # used by the os.walk iterator.
@@ -458,9 +550,13 @@ def genericURLGenerator(target):  # Some other function name
         if depth > maxDepth:
             continue
         for filename in files:
-            yield from getEndpoints(target, filename)
+            yield from specificURLGenerator(target, filename)
         for filename in target['config'].get('file_map', {}):
-            yield from getEndpoints(target, filename, checkFileMap=False)
+            yield from specificURLGenerator(target, filename, checkFileMap=False)
+
+    feedEndpoint = target.get('feedEndpoint', None)
+    if feedEndpoint:
+        yield feedEndpoint, {}, None
 
 
 class Menu(object):
@@ -471,6 +567,8 @@ class Menu(object):
         links = self.allLinks([
                       target for target in targets
                                 if target['config'].get('menu', True)]
+                      # This currently skips the feed links, because they have
+                      # no filePath
                     , includeFilePath=True)
         self._index = self._indexLinks(links)
         self._endpointIndex = self._indexTargets(targets)
@@ -520,13 +618,16 @@ class Menu(object):
         if targets is None:
             targets = self._targets
         for target in targets:
-            if includeFilePath:
-                # filePath can be used to get (lazyly fetched and cached)
-                # metadata for the file
-                yield from genericURLGenerator(target)
-                continue
             for endpoint, values, filePath in genericURLGenerator(target):
-                yield endpoint, values
+                if includeFilePath:
+                    # filePath can be used to get (lazyly fetched and cached)
+                    # metadata for the file
+                    if filePath is None:
+                        # Currently the atom feed endpoints don't have a filePath!
+                        continue
+                    yield endpoint, values, filePath
+                else:
+                    yield endpoint, values
 
     def _getLinkName(self, endpoint, viewArgsKey):
         meta = self._getLinkMetaData(endpoint, viewArgsKey)
@@ -542,8 +643,8 @@ class Menu(object):
 
         return '{0}/{1}'.format(endpoint, dict(viewArgsKey).get('filename', ''))
 
-    def getLink(self, endpoint, **viewArgs):
-        return self._getLink(endpoint, None, viewArgs)
+    def getLink(self, endpoint, include_meta=False, **viewArgs):
+        return self._getLink(endpoint, None, viewArgs, include_meta)
 
     def _getFileItem(self, endpoint, viewArgsKey):
         _, fileItem = self._getLinkMetaData(request.endpoint, viewArgsKey, (None, None))
@@ -558,7 +659,29 @@ class Menu(object):
         """ current file item """
         return self.getFileItem(request.endpoint, **request.view_args)
 
-    def _getLink(self, endpoint, viewArgsKey, viewArgs):
+
+    def getAdjacentLinks(self, sortorder='default', reverse=False, include_meta=False):
+        previous = current = after = last = None
+        found = False
+        for link in self.get([request.endpoint], sortorder=sortorder
+                                , reverse=reverse, include_meta=True):
+            meta = link[3]
+            if found :
+                after = link
+                break
+            elif meta['viewArgs'] == request.view_args:
+                previous = last
+                current = link
+                found = True
+                continue
+            last = link
+        if not include_meta:
+            if previous: previous = tuple(previous[:-1])
+            current = tuple(current[:-1])
+            if after: after = tuple(after[:-1])
+        return previous, current, after
+
+    def _getLink(self, endpoint, viewArgsKey, viewArgs, include_meta):
         if viewArgsKey is not None:
             # if both are not None, viewArgsKey wins
             viewArgs = dict(viewArgsKey)
@@ -570,7 +693,18 @@ class Menu(object):
         name = self._getLinkName(endpoint, viewArgsKey)
         url = self._url_for(endpoint, **viewArgs)
         active = self.isActive(endpoint, viewArgs)
-        return url, name, active
+
+        result = [url, name, active]
+        if include_meta:
+            (filePath, fileItem) = self._getLinkMetaData(endpoint, viewArgsKey, (None, None))
+            result.append({
+                'endpoint': endpoint
+              , 'viewArgs': viewArgs
+              , 'filePath': filePath
+              , 'fileItem': fileItem
+            })
+
+        return tuple(result)
 
     def _sortName(self, linkdata):
         return self._getLinkName(*linkdata)
@@ -590,7 +724,7 @@ class Menu(object):
           , 'mtime': self._sortMTime
         })[sortorder]
 
-    def get(self, endpoints=None, sortorder='default', reverse=False):
+    def get(self, endpoints=None, sortorder='default', reverse=False, include_meta=False):
         # todo: this should be more structured
         # all links of an endpoint should be yielded subsequently
         # and all links within in an endpoint should be sorted (name->alphabet, ctime, mtime)
@@ -615,15 +749,13 @@ class Menu(object):
                 links = reversed(links)
 
             for endpointName, viewArgsKey in links:
-                yield self._getLink(endpointName, viewArgsKey, None)
+                yield self._getLink(endpointName, viewArgsKey, None, include_meta)
 
 
 if __name__ == '__main__':
     # first argument sets rootpath
     rootpath = sys.argv[-1] if len(sys.argv) >= 2 else os.getcwd()
-    app, targets = makeApp(rootpath)
-
-    menu = Menu(app, targets)
+    app, menu = makeApp(rootpath)
 
     @app.context_processor
     def inject_globals():
@@ -637,6 +769,12 @@ if __name__ == '__main__':
             FREEZER_RELATIVE_URLS=True
           , FREEZER_DESTINATION=os.path.abspath(sys.argv[1])
         )
+
+
+        freezer_config = app.config['generator_config'].get('freezer_config', None)
+        if freezer_config:
+            app.config.update(freezer_config)
+
         freezer = Freezer( app
                            # We'll have to request all pages manually. This
                            # way we can create some endpoints pro forma

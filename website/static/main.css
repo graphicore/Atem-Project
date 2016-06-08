@@ -2,13 +2,14 @@
 
 html {
    font-family: 'Alegreya Sans', sans-serif;
+   overflow-y: scroll;
 }
 body {
    max-width: 1000px;
    margin: 0 auto;
 }
 
-header h1 {
+header.page h1 {
    text-align: center;
    margin: .5em 0 0 0;
 }
@@ -20,16 +21,35 @@ h1 {
 }
 
 article {
-   /* A line of text should not be too long */
-   max-width: 40em;
    line-height: 1.3em;
 }
 
-header{
-   border-bottom: 3px solid black;
+article.standard,
+article.blogpost .content {
+   /*
+      A line of text should not be too long
+      like  but works good to get the after link on the
+      right side of the page
+    */
+   max-width: 40em;
 }
 
-header h1 img.logo {
+article.standard,
+article.blogpost > * {
+   padding: 0 .3em;
+}
+
+header.page{
+   border-bottom: 3px solid black;
+}
+footer.page{
+   border-top: 3px solid black;
+   padding: 1em 0;
+   text-align: center;
+}
+
+
+header.page h1 img.logo {
    width:220px
 }
 
@@ -75,3 +95,37 @@ header .main-menu .top-level > li.active > a {
     letter-spacing: .01em;
 }
 
+.blogpost nav.relative{
+   height: 1.3em;
+   position: relative;
+}
+
+hr,
+.blogpost header {
+   border-bottom: 1px solid black;
+}
+
+.blogpost header {
+   padding-bottom: 1em;
+}
+
+.blogpost header h1{
+   margin-bottom: .2em;
+}
+
+.blogpost .summary:before {
+   content: 'tl;dr';
+   font-style: normal;
+   font-weight: bold;
+   display: block;
+   font-size: 1.2em;
+}
+
+.blogpost .summary {
+   font-style: italic;
+}
+
+.blogpost nav.relative a.next {
+   position: absolute;
+   right: 0;
+}
