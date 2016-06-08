@@ -1,0 +1,51 @@
+{% extends "standard.html" %}
+{% from 'stdlib.html' import rendermenu with context %}
+
+{% block body %}
+<article class="standard sitemap">
+<h1>{{title}}</h1>
+<div>
+<!--
+{% for target in menu.targets %}
+{% if target['config'].get('menu', True) %}
+    --><section class="endpoint">
+    {% if target['source'] %}
+    {#
+        A static or template endpoint, may or may not have an indexEndpoint.
+        A template endpoint may have a feedEndpoint
+    #}
+    <h3>{% if target['indexEndpoint'] %}
+        {% set link = menu.getLink(target['indexEndpoint'], False, None) %}
+        {% if link %}
+            {% set url, name, active = link %}
+            <a href="{{url}}">{{name}}</a>
+        {% endif %}
+    {% endif %}
+    {{ target['endpoint'] == '__root__' and '{home}' or target['endpoint'] }}
+    </h3>
+    {% if target['feedEndpoint'] %}
+        {% set link = menu.getLink(target['feedEndpoint'], False, None) %}
+        {% if link %}
+            <div>
+            {% set url, name, active = link %}
+            <em>Atom Feed</em>: <a href="{{url}}">{{name}}</a>
+            </div>
+        {% endif %}
+    {% endif %}
+    {{ rendermenu([target['endpoint']]) }}
+    {% else %}
+    {#
+        A file less endpoint, these are currently just single links
+    #}
+    <h3>{% set url, name, active = menu.getLink(target['endpoint'], False, None) %}
+            <a href="{{url}}">{{name}}</a>
+    {{ target['endpoint'] == '__root__' and '{home}' or target['endpoint'] }}
+    </h3>
+    {% endif %}
+    </section><!--
+{% endif %}
+{% endfor %}
+-->
+</div>
+</article>
+{% endblock %}

@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% from 'stdlib.html' import rendermenu with context %}
 {% block title %}{{ title }} | Atem Tooling Expressive Models{% endblock %}
 {% block head %}
 
@@ -56,7 +55,10 @@
                                                     , ('content/Proposals', {'filename': 'api-documentation-generator.md'}, 'API')
                                                 )
                             )
-                          , (('__root__', {'filename': 'help.md'}), help_menu, [])
+                          , (('__root__', {'filename': 'help.md'}), help_menu, [
+                                                      ('sitemap.html', None)
+                                                ]
+                            )
                         )
                       , before='-->'
                       , after='<!--'
@@ -68,11 +70,12 @@
 {% block body %}
 <article class="standard">{{ content }}</article>
 {% endblock %}
-{% block footer %}<footer class="page">
-<nav>
-    <a href="#">Sitemap</a>
-    <a href="#">Impressum</a>
+{% block footer %}
+<footer class="page">
+    {%-set url, name, active = menu.getLink('sitemap.html')-%}
+    <a href="{{url_for('sitemap.html')}}">{{name}}</a>
+    {% set url, name, active = menu.getLink('__root__', filename='impressum.md') %}
+    <a href="{{url}}">{{name}}</a>
     © <a href="https://github.com/graphicore/Atem-Project">The Atem-Project Authors</a>
-</nav>
 </footer>
 {% endblock %}

@@ -25,6 +25,7 @@ article {
 }
 
 article.standard,
+article.docs,
 article.blogpost .content {
    /*
       A line of text should not be too long
@@ -34,7 +35,12 @@ article.blogpost .content {
    max-width: 40em;
 }
 
+article.sitemap {
+   max-width: 100%;
+}
+
 article.standard,
+article.docs,
 article.blogpost > * {
    padding: 0 .3em;
 }
@@ -46,6 +52,7 @@ footer.page{
    border-top: 3px solid black;
    padding: 1em 0;
    text-align: center;
+   margin-top: 3em;
 }
 
 
@@ -105,12 +112,47 @@ hr,
    border-bottom: 1px solid black;
 }
 
+.sitemap .endpoint{
+   display: inline-block;
+   width: 50%;
+   vertical-align: top;
+   border-top: 1px solid black;
+}
+
+.sitemap .endpoint > ul {
+   max-height: 15em;
+   overflow-y: auto;
+}
+
+.sitemap .endpoint:nth-child(1),
+.sitemap .endpoint:nth-child(2) {
+   border-top: none;
+}
+
+
+.sitemap .endpoint:nth-child(2n+1){
+    border-right: 1px solid black;
+    box-sizing: border-box;
+}
+
+.sitemap .endpoint:nth-child(2n){
+    border-left: 1px solid black;
+    box-sizing: border-box;
+    margin-left: -1px;
+    padding-left: .5em;
+}
+
 .blogpost header {
    padding-bottom: 1em;
+   margin-bottom: 1em;
 }
 
 .blogpost header h1{
    margin-bottom: .2em;
+}
+
+.blogpost header *:last-child{
+      margin-bottom: 0;
 }
 
 .blogpost .summary:before {

@@ -18,26 +18,20 @@ targets:
         source: website
         maxdepth: 1
         file_map:
-            # now this creates a index.html from index.md, which is great
-            # but it also allows a "index.md.html" to be created, but since
-            # that file already has a target, I'd like to not make it also
-            # available via "index.md.html", which kind of is a hard problem
-            # here. Maybe this can be controlled on a per target basis, but
-            # probably not for all targets, as I think it is OK for other
-            # targets to process the same files
-            # in this case, we could look if the requested file is a value
-            # in one of the file_map entries and on that base reject the
-            # request
-            index: index.md
+            index.html: index.md
         user_menu: True
         index_link_name: Atem Project
     files:
         source: website/static
         renderer: static
-        menu: false
-        # I'd like to get rid of this via the config of renderer: static
-        suffix: ''
-        # maxdepth: Infinity
+        no_sitemap: True
+        menu: False # not part of the menu and sitemap
+    sitemap.html:
+        renderer: fileless
+        template: sitemap.html
+        title: Sitemap
+        link_name: 'Sitemap'
+        help_menu: True
     # not sure if I'm going to keep the "content" target as it
     # but it's good for the moment
     news:
@@ -45,18 +39,20 @@ targets:
         source: website/news
         template: blogpost.html
         file_map:
-            index: index.md
+            index.html: index.md
         types:
             md: null
         maxdepth: 1
         user_menu: True
         add_feed: True
         feed_maxitems: 10
-        feed_title: Atem-Project News
+        feed_title: Atem-Project News Feed
+        sortreverse: True
+        sortorder: ctime
     content/Concepts:
         source: Concepts
         file_map:
-            index: README.md
+            index.html: README.md
         types:
             # only md, all concepts are meant to be in this format
             md: null
@@ -68,7 +64,7 @@ targets:
         source: Proposals
         template: proposals.html
         file_map:
-            index: README.md
+            index.html: README.md
         types:
             # only md, all proposals are meant to be in this format
             md: null
@@ -77,9 +73,17 @@ targets:
     content/Manuals:
         source: Manuals
         file_map:
-            index: README.md
+            index.html: README.md
         types:
             # only md, all concepts are meant to be in this format
             md: null
         docs_menu: True
         index_link_name: Manuals
+    content/Docs:
+        source: Docs
+        file_map:
+            index.html: README.md
+        types:
+            # only md, all concepts are meant to be in this format
+            md: null
+        docs_menu: True
