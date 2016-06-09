@@ -20,7 +20,7 @@ targets:
         file_map:
             index.html: index.md
         user_menu: True
-        index_link_name: Atem Project
+        index_link_name: Atem
     files:
         source: website/static
         renderer: static
@@ -43,6 +43,7 @@ targets:
             md: null
         maxdepth: 1
         user_menu: True
+        index_link_name: News
         add_feed: True
         feed_maxitems: 10
         feed_title: Atem-Project News Feed
@@ -80,7 +81,7 @@ targets:
             md: null
         docs_menu: True
         index_link_name: Manuals
-    content/Docs:
+    content/Documentation:
         source: Docs
         template: docs.html
         file_map:
@@ -89,3 +90,6 @@ targets:
             # only md, all concepts are meant to be in this format
             md: null
         docs_menu: True
+        index_link_name: Documentaion
+        file_map:
+            index.html: README.md

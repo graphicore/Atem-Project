@@ -9,8 +9,8 @@
 {%- endmacro %}
 
 
-{% macro render_relative_nav(previous, next) -%}
-<nav class="relative">
+{% macro render_relative_nav(previous, next, class="") -%}
+<nav class="relative {{class}}">
     {%- if previous -%}
         {{ render_link(previous, label='Previous Post', class='previous') }}
     {%- endif -%}
@@ -27,7 +27,7 @@
 {%- set datetime = fileItem.times[0] -%}
 <article class="blogpost">
 <header>
-    {{ render_relative_nav(previous, next) }}
+    {{ render_relative_nav(previous, next, class="top") }}
     <h1>{{title or name}}</h1>
     {%- if not author -%}
     {%- set author = feed_author -%}

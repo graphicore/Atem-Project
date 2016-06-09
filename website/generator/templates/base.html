@@ -5,7 +5,7 @@
     <title>{% block title %}(no title){% endblock %}</title>
     {% block head %}{% endblock %}
 </head>
-<body>
+<body class="{% block bodyclass %}{% endblock %}">
   {% block header %}{% endblock %}
   {% block body %}{% endblock %}
   {% block footer %}{% endblock %}

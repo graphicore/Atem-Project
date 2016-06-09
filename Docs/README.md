@@ -1,7 +1,7 @@
 ```yaml
 user_menu: False
 docs_menu: True
-link_name: Documentation
+link_name: Project
 ```
 
 # Documenting Expressive Models

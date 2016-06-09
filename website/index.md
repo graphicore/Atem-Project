@@ -2,15 +2,15 @@
 # template: main.html
 user_menu: True
 ```
-
+*UNDER CONSTRUCTION* * *UNDER CONSTRUCTION* * *UNDER CONSTRUCTION* * *UNDER CONSTRUCTION*
 # Atem-Project
-**A**tem—**T**ooling **E**xpressive **M**odels: This is the central hub of the project and [host](./tree/gh-pages) of its website. We will guide the project (documentation, discussions, community, roadmaps etc.) from here.
+**A**tem **T**ooling **E**xpressive **M**odels:  We will guide the project (documentation, discussions, community, roadmaps etc.) from here.
 
 Use the issue-tracker of this Github repository to discuss any questions/topics about Atem.
 
 ## Contribute?
 
-A beginning of project management is in [tasks.md](./tasks.md). If you see yourself fit to work on one of the tasks, please contact us!
+A beginning of project management is in [tasks.md](https://github.com/graphicore/Atem-Project/tree/master/tasks.md). If you see yourself fit to work on one of the tasks, please contact us!
 
 ## The Atem-Project is a collection of sub-projects:
 

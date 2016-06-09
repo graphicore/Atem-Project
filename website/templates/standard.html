@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{ title }} | Atem Tooling Expressive Models{% endblock %}
+{% block title %}{{ title }} | {% if index_link_name %}{{index_link_name}} | {% endif%}Atem Tooling Expressive Models{% endblock %}
+
 {% block head %}
 
 <link rel="stylesheet" type="text/css"
@@ -54,10 +55,10 @@
            target="_blank"
            href="https://plus.google.com/u/0/communities/110027004108709154749"
            >Metapolator on Google+</a>
-    <h1><img style="width:220px;height:220px"
+    <h1><a href="{{url_for('__root__:index')}}"><img style="width:220px;height:220px"
              class="logo"
              alt="Atem Tooling Expressive Models"
-             src="{{ url_for('files', filename='Atem-Logo.svg') }}" /></h1>
+             src="{{ url_for('files', filename='Atem-Logo.svg') }}" /></a></h1>
     <nav class="main-menu">
         <ul class="top-level"><!--
             {{- main_menu_items(
@@ -68,7 +69,7 @@
                                                     , ('__root__', {'filename': 'contribute.md'}, 'Contribute')
                                                 )
                             )
-                          , (('__root__', {'filename': 'docs.md'}), docs_menu, (
+                          , (('content/Documentation:index', None), docs_menu, (
                                                       ('content/Concepts:index', None)
                                                     , ('content/Proposals:index', None)
                                                     , ('content/Manuals:index', None)

@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Alegreya+Sans:400,700,900,400italic,700italic,900italic);
+@import url(https://fonts.googleapis.com/css?family=Alegreya+Sans:400,700,400italic,700italic);
 
 html {
    font-family: 'Alegreya Sans', sans-serif;
@@ -15,9 +15,9 @@ header.page h1 {
 }
 
 h1 {
-   font-weight: 900;
-   letter-spacing: .02em;
    font-size: 1.6em;
+   font-style: italic;
+   font-weight: 700;
 }
 
 article {
@@ -66,7 +66,12 @@ nav.sub {
 header.page{
    border-bottom: 3px solid black;
    position: relative;
+   margin-bottom: 2.5em;
 }
+.docs header.page{
+   margin-bottom: 1em;
+}
+
 footer.page{
    border-top: 3px solid black;
    padding: 1em 0;
@@ -83,8 +88,12 @@ header.page a.connect {
    background-size: contain;
    width: 25px;
    height: 25px;
-   margin: 55px 5px 0 0;
+   margin: 10px 5px 0 0;
    right: 0;
+}
+
+header.page a.connect:hover {
+   opacity: .5;
 }
 
 header.page a.github {
@@ -129,6 +138,7 @@ header .main-menu .top-level > li > a {
 header .main-menu .top-level > li a:hover,
 header .main-menu .sub-level li a:hover {
    background: grey;
+   color: white;
 }
 
 
@@ -143,13 +153,16 @@ header .main-menu .sub-level li a {
 }
 .main-menu .active > a,
 header .main-menu .top-level > li.active > a {
-    font-weight: 900;
-    letter-spacing: .01em;
+    font-weight: 700;
+    font-style: italic;
 }
 
 .blogpost nav.relative{
    height: 1.3em;
    position: relative;
+}
+.blogpost nav.relative.top {
+   margin-top: -2em
 }
 
 hr,
