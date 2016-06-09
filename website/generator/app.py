@@ -3,7 +3,8 @@
 from functools import partial, wraps
 from datetime import datetime
 import subprocess
-import os, sys, stat
+import os, sys, stat, shutil, tempfile
+from io import StringIO
 
 from flask import Flask, abort, request, Markup, render_template, url_for \
                 , send_from_directory, render_template_string
@@ -261,7 +262,7 @@ def checkFileForEndpoint(target, filename):
 
     return True, result
 
-def staticRenderer(config, fileData):
+def staticRenderer(app, config, fileData):
     directory, filename = os.path.split(fileData['filePath'])
     try:
         return send_from_directory(directory, filename)
@@ -282,7 +283,7 @@ def renderContent(config, typeData, fileItem):
     content = prepareContent(contentType, fileItem.content, context)
     return content, context
 
-def templatedRenderer(config, fileData):
+def templatedRenderer(app, config, fileData):
     fileItem = app.config['fileDataCache'].get(fileData['filePath'], None)
 
     if not fileItem:
@@ -303,7 +304,7 @@ def fileless_view(config):
     template = config.get('template', 'standard.html')
     return render_template(template, **config)
 
-def file_view(rendererConfig, target, filename):
+def file_view(app, rendererConfig, target, filename):
     # nice, filename is indeed something like path/to/file.md
     # in http://localhost:5000/web/Proposals/path/to/file.md
     # so, the <path: converter works well!
@@ -333,7 +334,7 @@ def file_view(rendererConfig, target, filename):
     #     config.update(item)
 
     fn = rendererConfig.get('renderer')
-    return fn(endpointConfig, fileData)
+    return fn(app, endpointConfig, fileData)
 
 def feed_view(app, target):
     menu = app.config['menu']
@@ -437,6 +438,7 @@ def init_fileEndpoint(app, target, renderer):
     pathparts = [app.config['rootpath'], target['source']]
     rendererFunction, rendererConfig = renderer
     viewFunc = partial( rendererFunction
+                      , app
                       , rendererConfig
                       , target
     )
@@ -456,6 +458,7 @@ def init_indexEndpoint(app, target, renderer):
     # to request it by default, always unless the with_no_argument_rules
     # argument of Freezer is False, which is in this case.
     viewFunc = partial( rendererFunction
+                      , app
                       , rendererConfig
                       , target
                       # regardless of the suffix, this should always be
@@ -550,8 +553,6 @@ def buildRoutes(app, config, parent=None):
             if targetUpdate: target.update(targetUpdate)
 
         targets.append(target)
-
-    app.add_url_rule('/sitemap.html', 'sitemap', fileless_view)
 
     return targets;
 
@@ -703,11 +704,10 @@ class Menu(object):
         if viewArgsKey not in self._index[endpoint]:
             if default is not _defaultMarker:
                 return default
-            print('>>>', self._index[endpoint].keys())
             raise KeyError('No entry in endpoint "{0}" for key "{1}"'.format(endpoint, viewArgsKey))
         filePath = self._index[endpoint][viewArgsKey]
         if filePath is not None:
-            fileItem = app.config['fileDataCache'].get(filePath)
+            fileItem = self._app.config['fileDataCache'].get(filePath)
         else:
             fileItem = None
         return filePath, fileItem
@@ -882,11 +882,97 @@ class Menu(object):
             for key, viewArgsKey in links:
                 yield self._getLink(key, viewArgsKey, None, include_meta, endpointName=endpointName)
 
+def deepListDir(destination):
+    for root, dirs, files in os.walk(destination):
+        for f in files:
+            relpath = os.path.relpath(root, destination)
+            yield f if relpath == '.' else os.path.join(relpath, f)
 
-if __name__ == '__main__':
-    # first argument sets rootpath
-    rootpath = sys.argv[-1] if len(sys.argv) >= 2 else os.getcwd()
-    app, menu = makeApp(rootpath)
+def makeFilesManifest(destination, fileName):
+    out = StringIO()
+    for f in deepListDir(destination):
+        print(f, file=out)
+    with open(os.path.join(destination, fileName), 'w') as f:
+        f.write(out.getvalue())
+    out.close()
+
+def cleanDestination(destination, manifestFile):
+    if not os.path.isdir(destination):
+        return
+    manifestPath = os.path.join(destination, manifestFile)
+    if not os.path.isfile(manifestPath):
+        return
+    directories = set()
+
+    with open(manifestPath, 'r') as manifest:
+        for f in manifest:
+            # If manifestFile was edited paths in it could be
+            # outside of the destination dir.
+            # We won't touch these.
+            fileName = os.path.normpath(f.strip())
+            if f.startswith('..'):
+                continue
+            dirname = os.path.dirname(fileName)
+            if dirname and dirname != '.':
+                directories.add(dirname)
+
+            fileName = os.path.join(destination, fileName)
+            try:
+                os.remove(fileName)
+            except FileNotFoundError:
+                pass
+
+    os.remove(manifestPath)
+    fd_dir = os.open(destination, os.O_RDONLY)
+    # try to remove the directories that we have touched
+    # deletes only empty dirs
+    deleted = set()
+    for dirname in directories:
+        while(dirname and dirname != '.'):
+            if dirname in deleted:
+                break
+            try:
+                os.rmdir(dirname, dir_fd=fd_dir)
+                deleted.add(dirname)
+            except OSError:
+                pass
+            dirname = os.path.dirname(dirname)
+
+def generate(app, destination, manifestFile = '.webgenerator.manifest'):
+    tempdir = tempfile.mkdtemp()
+    try:
+        _generate(app, tempdir)
+        # we use this to clean up older versions of the generated page
+        makeFilesManifest(tempdir, manifestFile)
+        cleanDestination(destination, manifestFile)
+        for f in deepListDir(tempdir):
+            targetFile = os.path.join(destination, f)
+            os.makedirs(os.path.dirname(targetFile), exist_ok=True)
+            shutil.copy2(os.path.join(tempdir, f), targetFile)
+    finally:
+        shutil.rmtree(tempdir)
+
+
+def _generate(app, destination):
+    app.config.update(
+        FREEZER_RELATIVE_URLS=True
+      , FREEZER_DESTINATION=destination
+    )
+
+    freezer_config = app.config['generator_config'].get('freezer_config', None)
+    if freezer_config:
+        app.config.update(freezer_config)
+
+    freezer = Freezer( app
+                       # We'll have to request all pages manually. This
+                       # way we can create some endpoints pro forma
+                       # without yielding 404 errors.
+                     , with_no_argument_rules=False)
+    freezer.register_generator(app.config['menu'].allLinks)
+    freezer.freeze()
+
+def main(sourcepath, freezedir = None):
+    app, menu = makeApp(sourcepath)
 
     @app.context_processor
     def inject_globals():
@@ -894,24 +980,18 @@ if __name__ == '__main__':
             menu=menu
           , dir=dir
         )
-
-    if len(sys.argv) >= 3:
-        app.config.update(
-            FREEZER_RELATIVE_URLS=True
-          , FREEZER_DESTINATION=os.path.abspath(sys.argv[1])
-        )
-
-
-        freezer_config = app.config['generator_config'].get('freezer_config', None)
-        if freezer_config:
-            app.config.update(freezer_config)
-
-        freezer = Freezer( app
-                           # We'll have to request all pages manually. This
-                           # way we can create some endpoints pro forma
-                           # without yielding 404 errors.
-                         , with_no_argument_rules=False)
-        freezer.register_generator(menu.allLinks)
-        freezer.freeze()
+    if freezedir:
+        generate(app, freezedir)
     else:
         app.run(debug=True)
+
+if __name__ == '__main__':
+    # the last argument sets sourcepath
+    sourcepath = sys.argv[-1] if len(sys.argv) >= 2 else os.getcwd()
+    destination = None
+    # If there are 3 args, the second one sets a destination directory and
+    # the website will be generated in there instead of running the development
+    # server.
+    if len(sys.argv) >= 3:
+        destination = os.path.abspath(sys.argv[1])
+    main(sourcepath, destination)
