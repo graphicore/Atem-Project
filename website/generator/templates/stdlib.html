@@ -5,15 +5,3 @@
     <a href="{{url}}">{{name}}</a></li>{% endfor %}
 </ul>
 {%- endmacro %}
-
-{% macro render_news_links() -%}
-{% for url, name, active, meta in menu.get(['news'], sortorder='ctime', reverse=True, include_meta=True) %}
-    <li class="{% if active %}active{% endif %}">
-    {%- set fileItem =  meta['fileItem'] -%}
-    {%- set datetime, setup = fileItem.times[0], fileItem.setup -%}
-    <time datetime="{{datetime}}">{{datetime}}</time> <a href="{{url}}">{{ setup['title'] or name}}</a></li>
-    {%- if setup['summary'] -%}
-    <p>{{ setup['summary'] }} <a href="{{url}}">more</a></p>
-    {%- endif -%}
-    {%- endfor -%}
-{%- endmacro %}
