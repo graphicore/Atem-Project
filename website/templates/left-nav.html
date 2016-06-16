@@ -1,0 +1,43 @@
+{% extends "standard.html" %}
+{% from 'stdlib.html' import rendermenu, rendermenu_link with context %}
+{% block bodyclass %}layout-left-column left-nav{% endblock %}
+
+{% block body %}
+<nav class="sub">
+
+{%if not nav_setup %}
+{% set nav_setup = [dict(
+          endpoint= menu_endpoint or menu.target['endpoint']
+        , title= 'Contents in {0}'.format(menu_name or index_link_name or endpoint)
+        , sortorder= sortorder or None
+    )]
+%}
+{% endif %}
+
+
+{% for nav in nav_setup %}
+{% if nav.get('side', 'left') == 'left' %}
+    {% if nav.get('title', None) %}
+    <h3>{{nav['title']}}:</h3>
+    {% endif %}
+    {% if nav.get('links', None) %}
+        <ul>
+        {% for link in nav['links'] %}
+            {{ rendermenu_link( *menu.getLink(link[0], **(link[1] or {})) ) }}
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% if nav.get('endpoint', None) %}
+    {{ rendermenu( [nav['endpoint']]
+                , endpointName=nav.get('endpointName', '.')
+                , sortorder=nav.get('sortorder', None)
+    )}}
+    {% endif %}
+{% endif %}
+{% endfor %}
+
+</nav><!--
+--><article>
+{{ content }}
+</article>
+{% endblock %}

@@ -25,7 +25,7 @@ article {
 }
 
 article.standard,
-article.docs,
+.layout-left-column article,
 article.blogpost .content {
    /*
       A line of text should not be too long
@@ -35,15 +35,36 @@ article.blogpost .content {
    max-width: 40em;
 }
 
-nav.sub, article.docs {
+nav.sub, .layout-left-column article {
     display: inline-block;
     vertical-align: top;
     box-sizing: border-box;
 }
 
+article.sitemap {
+   max-width: 100%;
+}
+
+article.standard,
+.layout-left-column article,
+article.blogpost > *,
 nav.sub {
-   max-width: calc(100% - 40em);
+   padding: 0 .3em;
+}
+
+
+nav.sub {
+   /*
+    * This leaves 48em space for other content in the row
+    * The article width is however 40em at the moment.
+    * So, we have some room to the right. But  didn't want to
+    * make the navigation so much wider.
+    */
+   max-width: calc(100% - 48em);
    min-width: 12em;
+   width:100%;
+   background: #EEE;
+   padding-bottom: 1em
 }
 
 nav.sub ul{
@@ -52,23 +73,19 @@ nav.sub ul{
    list-style: inside;
 }
 
-article.sitemap {
-   max-width: 100%;
-}
 
 article.standard,
-article.docs,
-article.blogpost > *,
-nav.sub {
-   padding: 0 .3em;
+article.blogpost > *{
+   margin: 0 auto;
 }
+
 
 header.page{
    border-bottom: 3px solid black;
    position: relative;
    margin-bottom: 2.5em;
 }
-.docs header.page{
+.layout-left-column header.page {
    margin-bottom: 1em;
 }
 
@@ -165,10 +182,15 @@ header .main-menu .top-level > li.active > a {
    margin-top: -2em
 }
 
+hr {
+   border: none;
+}
+
 hr,
 .blogpost header {
    border-bottom: 1px solid black;
 }
+
 
 .sitemap .endpoint{
    display: inline-block;
@@ -228,4 +250,22 @@ hr,
 .blogpost nav.relative a.next {
    position: absolute;
    right: 0;
+}
+
+
+blockquote {
+    border-left: 5px solid lightgray;
+    color: gray;
+    font-style: italic;
+    padding-left: 1em;
+}
+
+blockquote em, blockquote strong {
+   color: black;
+}
+
+code {
+   font-family: monospace;
+   background: #EEE;
+   padding: 0 .4em;
 }

@@ -3,6 +3,9 @@
 
 {% block head %}
 
+<link rel="alternate" type="application/atom+xml"
+      title="Atem-Project News Feed" href="{{url_for('news.feed')}}" />
+
 <link rel="stylesheet" type="text/css"
       href="{{ url_for('files', filename='main.css') }}" />
 
@@ -65,11 +68,12 @@
                         (
                             (('__root__:index', None), user_menu, (
                                                       ('news:index', None, 'News')
-                                                    , ('__root__', {'filename': 'vision.md'}, 'Vision')
-                                                    , ('__root__', {'filename': 'contribute.md'}, 'Contribute')
+                                                    , ('content/Vision:index', None)
+                                                    , ('__root__', {'filename': 'support-us.md'}, 'Support Us')
+                                                    , ('__root__', {'filename': 'collaborate.md'}, 'Collaborate')
                                                 )
                             )
-                          , (('content/Documentation:index', None), docs_menu, (
+                          , (('content/Sub-Projects:index', None), docs_menu, (
                                                       ('content/Concepts:index', None)
                                                     , ('content/Proposals:index', None)
                                                     , ('content/Manuals:index', None)

@@ -1,8 +1,9 @@
-
-
 # Proposals
 
-*TODO: flesh out*
+This is our *main tool to guide progress* in the Atem-Project. These documents
+describe the planning of additions, enhancements or changes to the project.
+They are the base of technical discussions and later serve as guidance in the
+implementation process. After implementation they will document design choices
+that have been made.
 
-Proposals help us planning enhancements or new Atem tools and later
-serve as an initial documentation.
+Prepare to find some rough reads in here. This is basically synonymous to "work in progress".
