@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>vision.md | Vision | Atem Tooling Expressive Models</title>
+    
+
+<link rel="alternate" type="application/atom+xml"
+      title="Atem-Project News Feed" href="../../news/feed.atom" />
+
+<link rel="stylesheet" type="text/css"
+      href="../../files/main.css" />
+
+
+</head>
+<body class="layout-left-column left-nav">
+  
+
+
+<header class="page">
+        <a title="Atem-Project on GitHub"
+           class="connect github" target="_blank"
+           href="https://github.com/graphicore/Atem-Project"
+           >Atem-Project on GitHub</a>
+        <a title="@AtemProject on Twitter"
+           class="connect twitter"
+           target="_blank"
+           href="https://twitter.com/AtemProject"
+           >@AtemProject on Twitter</a>
+        <a title="Subscribe to the News Feed"
+           class="connect feed"
+           href="../../news/feed.atom"
+           >Subscribe to the  News Feed</a>
+        <a title="Metapolator on Google+"
+           class="connect gplus"
+           target="_blank"
+           href="https://plus.google.com/u/0/communities/110027004108709154749"
+           >Metapolator on Google+</a>
+    <h1><a href="../../index.html"><img style="width:220px;height:220px"
+             class="logo"
+             alt="Atem Tooling Expressive Models"
+             src="../../files/Atem-Logo.svg" /></a></h1>
+    <nav class="main-menu">
+        <ul class="top-level"><!--
+        --><li class="">
+            <a href="../../index.html">Atem</a>
+            </li><!----><li class="sub-level"><ul><!--
+        --><li class="">
+        <a href="../../news/index.html">News</a></li><!--
+        --><li class="active">
+        <a href="index.html">Vision</a></li><!--
+        --><li class="">
+        <a href="../../support-us.md.html">Support Us</a></li><!--
+        --><li class="">
+        <a href="../../collaborate.md.html">Collaborate</a></li><!----></ul></li><!----><!--
+        --><li class="">
+            <a href="../Sub-Projects/index.html">Project</a>
+            </li><!----><!--
+        --><li class="">
+            <a href="../../help.md.html">Help</a>
+            </li><!----><!----></ul>
+    </nav>
+</header>
+
+  
+<nav class="sub">
+
+
+
+
+
+
+
+
+    
+    <h3>Contents in Vision:</h3>
+    
+    
+    
+    <ul><li class="">
+    <a href="history.md.html">History</a></li></ul>
+    
+
+
+
+</nav><!--
+--><article>
+<h1>Vision</h1>
+
+<p>This is where we are and where we are going. Have a look at our
+<a href="history.md.html">history</a> to see where
+we are coming from. Take this as <strong>the bigger picture</strong>. We will have detailed
+roadmap documents published for shorter term goals.</p>
+
+<h2>Where We Are</h2>
+
+<p>We have three Applications to demo the state of the technology.</p>
+
+<ul>
+<li><a href="http://metapolator.com" target="_blank">Metapolator</a> a next generation font-family
+authoring tool. It has a great vision and is in a minimal viable product state.</li>
+<li>The <a href="http://metapolator.com/developer-tool/" target="_blank">MOM-Developer-Tool</a>
+which reveals a lot of the inner workings of Metapolator and has the potential to grow into
+our generic platform base.</li>
+<li>The <a href="https://github.com/graphicore/Bauhaus-Emblem-Font" target="_blank">Bauhaus-Emblem-Font</a> (not online yet)
+Which serves three purposes:
+
+<ol>
+<li>An <em>editor for type on a circle</em> as seen on the Bauhaus-Emblem of Oskar Schlemmer,</li>
+<li>a <em>tech-demo for Atem</em> and</li>
+<li>an <em>initiation and learning tool for CPS</em>.</li>
+</ol></li>
+</ul>
+
+<p>Our code-base is in a good shape for the moment. It&#39;s split up into modules
+with clearly defined dependencies. We have solved some harder problems that
+occur when JavaScript is used in different environments than just the browsers,
+like node.js command-lines e.g. <code>Atem-IO</code>.</p>
+
+<p>In presentations or in face-to-face dialogues, we get generally good to
+positively excited feedback when we show what we have.</p>
+
+<h2>Where we ultimately end up</h2>
+
+<p>The <em>Developer-Tool</em> type of applications will transform into a <strong>polymorphic
+platform</strong>. We&#39;ll have it fully customizable and most of it working via
+plugins. We may end up having—similar to Linux-distributions—specializations
+of it, particularly well fitted for a specific task. E.g. <strong>Metapolator</strong>,
+which is now <q>custom made</q>, should be built on this platform.</p>
+
+<p>A core feature will always be having the setup for experimentation and exploration,
+without the need for polished UI and UX, to allow fast paced development.</p>
+
+<h3>Font-Authoring</h3>
+
+<p>We&#39;ll have a <strong>drawing tool</strong>, that&#39;ll allow drawing fonts with our object model
+from scratch. It will be a comfortable tool to work with for type designers.
+This will lead to a <strong>fully non-destructive workflow.</strong> I.e. when a master is
+changed, the changes will <em>ripple through the instances</em> that inherit from
+that master. Fixes for problematic parts after interpolation will <em>persist</em>
+and interpolation will happen <em>continuously</em>.</p>
+
+<p>The Metapolator-Object-Model (MOM) and Cascading-Properties-Sheets (CPS)
+will be used as the common base. We&#39;ll have different general directions
+to explore parametric type design.</p>
+
+<ul>
+<li>One general approach is having <strong>generic elements</strong>, like our <code>&lt;penstroke&gt;</code>
+or other generic drawing abstractions and making these work in the parametric font.
+A great deal for this will be the implementation of a concept with the working
+title <strong><q>meta-components</q></strong>, which will make a reuse straight forward. E.g. a serif,
+that is made from a generic <code>&lt;contour&gt;</code> element and enhanced with custom
+<code>CPS</code>-formulae can be shared across different glyphs and may still get assigned
+specific overrides for each instance.</li>
+<li>Another general approach is using <strong>specialized elements</strong> that can be loaded
+as plugins. E.g. one element-type that draws only serifs, one element-type
+that draws only shoulders and so on.</li>
+<li>The third approach will be <strong>combining all other directions</strong>. The way CPS
+works allows us to mix and match any elements in the object model and make them
+work together.</li>
+<li>We are <strong>open for more new ideas</strong> on our journey.</li>
+</ul>
+
+<h3>New Domains</h3>
+
+<p>It&#39;s easy to come up with <em>custom Object-Models</em> based on our Object-Model-API (OMA)
+this entails having the fully functional CPS engine available. All the generic
+tools that are not specific for the MOM will be available: <em>loading/saving</em>,
+<em>history management</em> and the <em>Developer-Tool</em> platform with all the <em>CPS-Tools</em>
+come for free.</p>
+
+<p>We&#39;ll work on inspiring and supporting other people to <em>approach new domains</em>
+using our tooling. The <a href="https://github.com/graphicore/Bauhaus-Emblem-Font">Bauhaus-Emblem-Font</a>
+is an example and it should be possible to take it further into a parametric <strong>illustration
+tool</strong>.</p>
+
+<p>We&#39;ve been talking to the <a href="http://valentina-project.org/">Valentina Project</a>
+an <em>Open Source (fashion-)pattern drafting software</em>. It would be a blast to
+come up with a <strong>pattern drafting software</strong> based on the OMA, i.e. packed with
+<code>&lt;collar&gt;</code> elements and so on.</p>
+
+<p>Conceptually, there&#39;s nothing in Atem technology limiting it to be used for
+<strong>non-graphical</strong> applications like <strong>audio</strong> or adding a dimension and
+exploring <strong>3d modeling</strong>. But, we will have to improve our Property-Language
+to be up to the task.</p>
+
+<h2>How we get there</h2>
+
+<p>From here, start to explore the <a href="../Sub-Projects/index.html">Project</a>
+and see what we make out of our plan, or consider <a href="../../support-us.md.html">supporting us</a> and
+<a href="../../collaborate.md.html">collaboration</a> if you want this
+vision to come true.</p>
+
+</article>
+
+  
+<footer class="page"><a href="../../sitemap.html">Sitemap</a>
+    
+    <a href="../../impressum.md.html">Impressum</a>
+    © <a href="https://github.com/graphicore/Atem-Project">The Atem-Project Authors</a>
+</footer>
+
+</body>
+</html>

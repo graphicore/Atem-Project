@@ -5,12 +5,15 @@
     <title>api-docs-generator.md | Proposals | Atem Tooling Expressive Models</title>
     
 
+<link rel="alternate" type="application/atom+xml"
+      title="Atem-Project News Feed" href="../../news/feed.atom" />
+
 <link rel="stylesheet" type="text/css"
       href="../../files/main.css" />
 
 
 </head>
-<body class="docs">
+<body class="layout-left-column left-nav">
   
 
 
@@ -43,7 +46,7 @@
             <a href="../../index.html">Atem</a>
             </li><!----><!--
         --><li class="">
-            <a href="../Documentation/index.html">Project</a>
+            <a href="../Sub-Projects/index.html">Project</a>
             </li><!----><li class="sub-level"><ul><!--
         --><li class="">
         <a href="../Concepts/index.html">Concepts</a></li><!--
@@ -61,32 +64,63 @@
 
   
 <nav class="sub">
-   <h3>All Proposals</h3>
-   <ul>
 
-    <li class="active">
-    <a href="api-docs-generator.md.html">./api-docs-generator.md</a></li>
-    <li class="">
-    <a href="website-generator.md.html">./website-generator.md</a></li>
-</ul>
+
+
+
+
+
+
+
+    
+    <h3>Contents in Proposals:</h3>
+    
+    
+    
+    <ul><li class="active">
+    <a href="api-docs-generator.md.html">./api-docs-generator.md</a></li><li class="">
+    <a href="website-generator.md.html">./website-generator.md</a></li></ul>
+    
+
+
+
 </nav><!--
---><article class="docs">
-<h1>API Documentation Generator</h1>
+--><article>
+<h1>Proposal: API Documentation Generator</h1>
 
-<p><strong>This is a stub!</strong></p>
+<p><strong>This is not the API documentation you are looking for.</strong></p>
 
-<p>Documentation is a need that we have. <em>This is a navigational dead end to raise
-awareness</em> for our need of an <em>automated system</em> to generate well structured API documentation
+<p>Documentation is a need that we have. <em>This is a navigational dead end</em> to raise
+awareness for our need of an <strong>automated system to generate well structured API documentation</strong>
 from our original source code, where then as well the source codes will have to be changed to feed
 into that system.</p>
 
-<p>What we want is to have good readable and ideally hyper-linked documentation
-generated from our original source files. In the best case synced via git hook
-and travis on update or on new tag releases.</p>
+<h2>Why</h2>
 
-<p>Generating the docs has higher priority than automatic updating, in fact, the latter could be impractical.</p>
+<p>Atem is a young project with still fast and often changing code. Well made
+hand-written documentation is a luxury we can&#39;t afford yet, it&#39;d be outdated
+in the moment we stop writing docs and switch to write code again.</p>
 
-<p>Maybe we can do or reuse something in the spirit of literate programming.</p>
+<h2>What</h2>
+
+<p>We want to have good readable and ideally hyper-linked documentation
+generated from our original source files. In the best case synced via github
+hooks and travis on update or on new tag releases.</p>
+
+<p>Python has Sphinx, which is good but, as it seems, not very well with JavaScript.
+We also have very uniformly organized repositories, code in a modular fashion
+and a relatively well defined coding style. It should be possible to take
+some advantage from that.</p>
+
+<p>Generating the docs has a higher priority than automatic updating, in fact,
+the latter could be impractical(when?).</p>
+
+<p>Maybe we can make or reuse something in the spirit of literate programming.
+It would be nice to still have the source-code accessible where the generated
+documentation is displayed.</p>
+
+<p>We will have to augment our source code with doc-strings accordingly. This
+is something that can grow over time.</p>
 
 </article>
 
