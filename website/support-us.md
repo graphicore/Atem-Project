@@ -7,7 +7,7 @@ Roughly, it means that the users have **the freedom to run, copy, distribute, st
 Thus, “free software” is *a matter of liberty, not price*. To understand the concept, you should think of “free” **as in “free speech,” not as in “free beer”**.
 We sometimes call it “libre software” to show we do not mean it is gratis.
 
-As such, however, funding our work is not as straight forward as selling proprietary licenses.
+Therefore, funding our work is not as straight forward as selling proprietary licenses.
 
 If you like [what]({{url_for('content/Vision:index')}}) we [do]({{ url_for('content/Sub-Projects:index') }}),
 and want us to **keep doing it** or if you use our software in a professional workflow then

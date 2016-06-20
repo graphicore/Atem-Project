@@ -12,8 +12,8 @@ helps the user to grow some more knowledge.
 
 The root of Atem is [Metapolator](http://metapolator.com) and our focus
 is on making better tools for **type design and typography**. But, Atem is
-not limited to any specific use. As such we build big applications and
-smaller tech-demos that may spark inspiration for other domains as well.
+not limited to any specific use. We build big applications and
+smaller tech-demos to spark inspiration for **other domains.**
 
 For more details see [Vision]({{ url_for('content/Vision:index') }}).
 
@@ -23,7 +23,7 @@ Atem is all about making great and Free Software—**“free” as in “free sp
 collaborate as a community, using git as our main tool.
 The [contents](https://github.com/graphicore/Atem-Project) and
 [code](https://github.com/graphicore/Atem-Webgenerator) of this website
-are hosted on GitGub. Think of it like a Wiki, but with worklfow for collaboration
+are hosted on GitGub. Think of it like a Wiki, but with a worklfow
 as in Open Source Software.
 
 Of course all source code of our [sub-projects]({{ url_for('content/Sub-Projects:index') }})
@@ -35,7 +35,7 @@ inspiration for what you can do.
 ## Project Communication
 
 A big part of this website is dedicated to project management and documentation
-of Atem. As such, the [Project]({{ url_for('content/Sub-Projects:index') }}),
+of Atem. The [Project]({{ url_for('content/Sub-Projects:index') }}),
 [Concepts]({{ url_for('content/Concepts:index') }}),
 [Proposals]({{ url_for('content/Proposals:index') }}) and
 [Manuals]({{ url_for('content/Manuals:index') }}) sections
