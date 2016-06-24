@@ -55,8 +55,8 @@ cd $BUILD_DIR
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
-# also add removed files
-git add -u .
+# also add deletions
+git add -A .
 
 # If there are no changes to the compiled $BUILD_DIR (e.g. this is a README update) then just bail.
 if [ -z "`git diff --cached`" ]; then
