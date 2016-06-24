@@ -4,16 +4,13 @@ impressum.md.html
 support-us.md.html
 index.html
 sitemap.html
-news/2016-06-18_Hello-World.md.html
-news/index.html
-news/feed.atom
+content/Vision/history.md.html
+content/Vision/index.html
 content/Manuals/index.html
+content/Sub-Projects/index.html
 content/Proposals/api-docs-generator.md.html
 content/Proposals/website-generator.md.html
 content/Proposals/index.html
-content/Sub-Projects/index.html
-content/Vision/history.md.html
-content/Vision/index.html
 content/Concepts/index.html
 files/Atem-Logo.svg
 files/Feed-icon.svg
@@ -21,3 +18,6 @@ files/GitHub-icon.svg
 files/Gplus-icon.svg
 files/Twitter-icon.svg
 files/main.css
+news/2016-06-18_Hello-World.md.html
+news/index.html
+news/feed.atom
