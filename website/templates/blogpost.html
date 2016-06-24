@@ -38,7 +38,7 @@
     {%- else -%}
         <span class="author">{{author['name']}}</span>
     {%- endif %}
-    on <time datetime="{{datetime}}">{{datetime}}</time>
+    on <time datetime="{{datetime.isoformat()}}">{{datetime}}</time>
     {% if summary %}
     <p class="summary">{{summary}}</p>
     {% endif%}

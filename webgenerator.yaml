@@ -1,4 +1,5 @@
 template_folder: website/templates
+timezone: Europe/Berlin
 freezer_config:
     url_root: http://atem.graphicore.de
 source_defaults:
