@@ -82,6 +82,7 @@ targets:
             md: null
         docs_menu: True
         index_link_name: Proposals
+        sortorder: ['weight', 'name', 'ctime']
     content/Manuals:
         source: Manuals
         template: left-nav.html

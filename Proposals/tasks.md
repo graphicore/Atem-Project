@@ -1,3 +1,8 @@
+```yaml
+link_name: Tasks
+weight: -10
+```
+
 # Tasks
 
 This is a list of things to do in the Project. Some of the tasks are easier
@@ -8,13 +13,12 @@ If you think you can handle one of these tasks or if you have a new addition to
 the list, contact us via the issue tracker or send a mail to Lasse.
 
 Detailed descriptions may be linked from here, to the Atem subproject, to
-an issue in the issue tracker or to a file in the [Proposals](./Proposals)
-directory
+an issue in the issue tracker or to a [Proposal]({{url_for('content/Proposals:index')}}).
 
 ## Administration, Documentation and Publications
 
- * Write contents for the [website](http://atem.graphicore.de), that is more general information and easier to consume than in this repository. Targeted at people who just want to know what's going on. Create interest.
- * A general Atem project documentation, explain how it all plays together (Maybe sub-project wise: dependecies and depndants).
+ * Write contents for this website, targeted at people who just want to know what's going on. Create interest.
+ * General Atem-Project documentation, explain how it all plays together (Maybe sub-project wise: dependecies and depndants).
  * Find rules for contribution and improve them over time.
  * Atem sub-projects should follow the same style, so that we can deploy the same QA/build/production tools etc.
  * Inline CPS examples and documentation (Bauhaus Emblem Font, Atem-MOM-Developer-Tool).
@@ -26,7 +30,7 @@ directory
 
 ## Programming
 
- * Build sdripts/tools for the applications.
+ * Build scripts/tools for the applications.
  * Can we do reasonable well API-documentation generation from our sources?
  * A generic base for all Atem applications, that includes solutions to serve locally, export for a simple http-server, launch as a Desktop Application (e.g. using QT5 qith V8).
  * Testing infrastructure that works for all subprojects the same (AMD, Node+Web, Coverage, more as in ufoJS than in Metapolator).
