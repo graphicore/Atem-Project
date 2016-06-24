@@ -50,18 +50,23 @@ doCompile
 
 # Now let's go have some fun with the cloned repo
 cd $BUILD_DIR
+
+
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
+git add .
 # If there are no changes to the compiled $BUILD_DIR (e.g. this is a README update) then just bail.
-if git diff-index --quiet HEAD --; then
+if [ -z "`git diff --cached`" ]; then
     echo "No changes to $TARGET_BRANCH on this push; exiting."
     exit 0
 fi
 
+echo 'deploying now ...'
+
 # Commit the "changes", i.e. the new version.
 # The delta will show diffs between new and old versions.
-git add .
+
 git commit -m "Travis deploy to GitHub Pages: ${SHA}"
 
 # Get the deploy key by using Travis's stored variables to decrypt id_rsa.enc
