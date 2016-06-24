@@ -1,0 +1,8 @@
+language: python
+python:
+  - "3.5"
+script: bash ./deploy.sh
+env:
+  global:
+  - ENCRYPTION_LABEL: "354c73d975f9"
+  - COMMIT_AUTHOR_EMAIL: "commander@graphicore.de"
