@@ -8,7 +8,7 @@ We explore new data models and make good tooling for this.
 
 Our aim is making software that empowers the user, that is simple to use
 by default but is unlimited when more might is needed. Software that
-helps the user to grow some more knowledge.
+helps the user to grow more knowledge and to become more skillful.
 
 The root of Atem is [Metapolator](http://metapolator.com) and our focus
 is on making better tools for **type design and typography**. But, Atem is
@@ -23,7 +23,7 @@ Atem is all about making great and Free Software—**“free” as in “free sp
 collaborate as a community, using git as our main tool.
 The [contents](https://github.com/graphicore/Atem-Project) and
 [code](https://github.com/graphicore/Atem-Webgenerator) of this website
-are hosted on GitGub. Think of it like a Wiki, but with a worklfow
+are hosted on GitHub. Think of it like a **Wiki**, but with a worklfow
 as in Open Source Software.
 
 Of course all source code of our [sub-projects]({{ url_for('content/Sub-Projects:index') }})
