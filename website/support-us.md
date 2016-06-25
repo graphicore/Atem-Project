@@ -24,7 +24,9 @@ From [Wikipedia](https://en.wikipedia.org/wiki/Patreon):
 musicians, and webcomic artists. It allows artists to *obtain funding from
 their fans or patrons*, on a **recurring basis**, or **per work of art**.
 
-**FIXME: Link/Profile Missing**
+Here: **<a href="http://patreon.com/user?u=3557006" target="_blank">Atem-Project on Patreon</a>**
+
+The receiver of your funding is [Lasse](http://graphicore.de/en/page/lasse).
 
 ## Contracting
 
