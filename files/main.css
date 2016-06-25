@@ -121,15 +121,20 @@ header.page a.twitter {
    background-image: url("Twitter-icon.svg");
    top: 30px;
 }
+
+header.page a.patreon {
+   background-image: url("Patreon_icon.svg");
+   top: 60px;
+}
+
 header.page a.feed {
    background-image: url("Feed-icon.svg");
-   top: 60px;
+   top: 90px;
 }
 header.page a.gplus {
    background-image: url("Gplus-icon.svg");
-   top: 90px;
+   top: 120px;
 }
-
 
 header .main-menu ul,
 header .main-menu li {
