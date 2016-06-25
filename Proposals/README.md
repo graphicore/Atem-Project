@@ -13,5 +13,4 @@ to **"work in progress."** We don't believe that a reasonably complex piece of
 software can be planned and then written in a top-down fashion like in the
 [Waterfall model](https://en.wikipedia.org/wiki/Waterfall_model). Instead,
 software-development is done in [iterative and incremental processes](https://en.wikipedia.org/wiki/Iterative_and_incremental_development).
-The proposals here are no exception, and as such we should treat them as living
-documents.
+The proposals here are no exception, thus, we treat them as living documents.
