@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Developer_Mindset.md | Concepts | Atem Tooling Expressive Models</title>
+    
+
+<link rel="alternate" type="application/atom+xml"
+      title="Atem-Project News Feed" href="../../news/feed.atom" />
+
+<link rel="stylesheet" type="text/css"
+      href="../../files/main.css" />
+
+
+</head>
+<body class="layout-left-column left-nav">
+  
+
+
+<header class="page">
+        <a title="Atem-Project on GitHub"
+           class="connect github" target="_blank"
+           href="https://github.com/graphicore/Atem-Project"
+           >Atem-Project on GitHub</a>
+        <a title="@AtemProject on Twitter"
+           class="connect twitter"
+           target="_blank"
+           href="https://twitter.com/AtemProject"
+           >@AtemProject on Twitter</a>
+        <a title="Subscribe to the News Feed"
+           class="connect feed"
+           href="../../news/feed.atom"
+           >Subscribe to the  News Feed</a>
+        <a title="Metapolator on Google+"
+           class="connect gplus"
+           target="_blank"
+           href="https://plus.google.com/u/0/communities/110027004108709154749"
+           >Metapolator on Google+</a>
+    <h1><a href="../../index.html"><img style="width:220px;height:220px"
+             class="logo"
+             alt="Atem Tooling Expressive Models"
+             src="../../files/Atem-Logo.svg" /></a></h1>
+    <nav class="main-menu">
+        <ul class="top-level"><!--
+        --><li class="">
+            <a href="../../index.html">Atem</a>
+            </li><!----><!--
+        --><li class="">
+            <a href="../Sub-Projects/index.html">Project</a>
+            </li><!----><li class="sub-level"><ul><!--
+        --><li class="">
+        <a href="index.html">Concepts</a></li><!--
+        --><li class="">
+        <a href="../Proposals/index.html">Proposals</a></li><!--
+        --><li class="">
+        <a href="../Manuals/index.html">Manuals</a></li><!--
+        --><li class="">
+        <a href="../Proposals/api-docs-generator.md.html">API</a></li><!----></ul></li><!----><!--
+        --><li class="">
+            <a href="../../help.md.html">Help</a>
+            </li><!----><!----></ul>
+    </nav>
+</header>
+
+  
+<nav class="sub">
+
+
+
+
+
+
+
+
+    
+    <h3>Contents in Concepts:</h3>
+    
+    
+    
+    <ul><li class="active">
+    <a href="Developer_Mindset.md.html">./Developer_Mindset.md</a></li></ul>
+    
+
+
+
+</nav><!--
+--><article>
+<h1>Developer Mindset</h1>
+
+<p>An attempt to get you into a good mood for development in the Atem-Project.</p>
+
+<p><em>Never finished. Additions welcome.</em></p>
+
+<h2>Be Autonomous</h2>
+
+<p>Learn how things are done in Atem by reading code and documentatin and
+by understanding it for yourself. If you have trouble understanding the
+JavaScript of Atem, go to <a href="https://developer.mozilla.org/en-US/">MDN</a>
+(nowhere else) and learn the syntax and API. <em>Don&#39;t let us find the
+documentation for you.</em> It doubles the time wasted for the task and you
+learn less.</p>
+
+<p>If there&#39;s no documentation and you have a hard time understanding something,
+try to <strong>formulate a most informed question.</strong> If that did not help you
+already we&#39;ll be glad answering you.</p>
+
+<p>If you just had a fundamental breakthrough in understanding something in
+Atem, <strong>be a hero and write a short article</strong> to share in the
+<a href="index.html">Concepts</a> or
+<a href="../Manuals/index.html">Manuals</a> section.</p>
+
+<h2>Look at Atem-Project in its entirety</h2>
+
+<p>Always consider the whole Atem-Project, not just your specific problem at
+hand. Many solutions may be better/leaner if applied in a lower level of
+the project. Before you start to hack a fix around some bad behavior of a
+dependency, <strong>consider fixing the dependency.</strong></p>
+
+<p>This is important, because of the subproject-structure of Atem it is likely
+that you think fixing the hindrance is <q>to much effort</q> or whatever. But
+in fact it will in the most cases <strong>improve the project and make it more
+complete.</strong> Also, you will learn more about the project structure and
+eventually start taking part in forming the lower level structures of the
+project.</p>
+
+<p>A good starting point to fix lower level code could be to make a
+clean sub-class of the module in question, within your project, and implement
+the changes needed there (or do monkey-patching if there&#39;s no better way).
+That way, discussing the upstreaming of the changes will be easy and
+straight forward and you can keep on going without a pull request, maybe
+file an issue and point to the changes needed.</p>
+
+<p>For the project, <strong>the most valuable thing you can give is a pull request.</strong>
+But this kind of contribution can slow things down; because there is peer
+review involved: people reading the code, discussions, requests for changes
+etc. If, for whatever reason you lack the time for a proper pull request
+process, it is OK to do it as described above. Important is that you don&#39;t
+take the foundation you build upon as given and work around weaknesses,
+instead, <strong>improve the foundation</strong>.</p>
+
+<h2>Write code for other people to read</h2>
+
+<p>When writing code try to be short and precise but not cryptic. The most
+important function of your code is to be read by other developers, <strong>write
+code as if you want to explain something to a human being.</strong></p>
+
+<h2>Break Stuff</h2>
+
+<p>To make things better you got to break things. <a href="https://blog.codinghorror.com/dont-be-afraid-to-break-stuff/">Don&#39;t be afraid to break stuff</a>,
+it&#39;s an opportunity for you to learn and it&#39;s probably the right way to
+achieve your goal.</p>
+
+<p>We use the concept of <q>private</q> properties/functions/methods—marked with
+an <code>_</code> underscore as the prefix of a name—<em>that&#39;s <strong>invaluable</strong> when refactoring
+code.</em> Be reckless when changing private APIs, be careful when changing public
+APIs. Use <code>grep</code>, consider all users of a public APIs, see how the public APIs
+are used. <strong>By default, add private APIs</strong>, only add public APIs when they are
+really needed in the very moment. <em>Don&#39;t presumably add new public APIs,</em>
+unless it&#39;s really core to how your module is to be used.</p>
+
+<p>After breaking things you should still try to make a Pull Request that does
+not break things <q>too much</q>, or at least inform us about things you broke
+in your PR. The point is that <strong>your result will be better if you did break
+stuff in the process.</strong></p>
+
+<p><a
+    href="https://xkcd.com/1428/"
+    ><img
+        src="//imgs.xkcd.com/comics/move_fast_and_break_things.png"
+        title="I was almost fired from a job driving the hearse in funeral processions, but then the funeral home realized how much business I was creating for them."
+        alt="Move Fast and Break Things"
+        /></a></p>
+
+</article>
+
+  
+<footer class="page"><a href="../../sitemap.html">Sitemap</a>
+    
+    <a href="../../impressum.md.html">Impressum</a>
+    © <a href="https://github.com/graphicore/Atem-Project">The Atem-Project Authors</a>
+</footer>
+
+</body>
+</html>
