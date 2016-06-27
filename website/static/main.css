@@ -117,23 +117,25 @@ header.page a.github {
 
    background-image: url("GitHub-icon.svg");
 }
-header.page a.twitter {
-   background-image: url("Twitter-icon.svg");
-   top: 30px;
-}
 
 header.page a.patreon {
    background-image: url("Patreon_icon.svg");
+   top: 31px;
+}
+
+header.page a.gplus {
+   background-image: url("Gplus-icon.svg");
    top: 60px;
+}
+
+header.page a.twitter {
+   background-image: url("Twitter-icon.svg");
+   top: 87px;
 }
 
 header.page a.feed {
    background-image: url("Feed-icon.svg");
-   top: 90px;
-}
-header.page a.gplus {
-   background-image: url("Gplus-icon.svg");
-   top: 120px;
+   top: 116px;
 }
 
 header .main-menu ul,
