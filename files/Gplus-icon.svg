@@ -6,10 +6,10 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   id="svg2"
-   height="175"
+   version="1.1"
    width="175"
-   version="1.1">
+   height="175"
+   id="svg2">
   <defs
      id="defs4" />
   <metadata
@@ -25,18 +25,18 @@
     </rdf:RDF>
   </metadata>
   <g
-     style="fill:#000000"
+     transform="matrix(7.8874104,0,0,7.8874104,-101.79785,-101.79785)"
      id="g4222"
-     transform="matrix(7.7702793,0,0,7.7702793,-98.986703,-98.986703)">
+     style="fill:#000000">
     <path
-       style="fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:1"
-       sketch:type="MSShapeGroup"
+       d="m 20.253553,23 0,2.4 3.97,0 c -0.16,1.03 -1.2,3.02 -3.97,3.02 -2.39,0 -4.34,-1.98 -4.34,-4.42 0,-2.44 1.95,-4.42 4.34,-4.42 1.36,0 2.27,0.58 2.79,1.08 l 1.9,-1.83 c -1.22,-1.14 -2.8,-1.83 -4.69,-1.83 -3.87,0 -7,3.13 -7,7 0,3.87 2.876447,7 6.746447,7 4.04,0 6.973553,-2.84 6.973553,-6.84 0,-0.46 -0.05,-0.81 -0.11,-1.16 l -6.61,0 z"
        id="Shape"
-       d="m 20,23 0,2.4 3.97,0 c -0.16,1.03 -1.2,3.02 -3.97,3.02 -2.39,0 -4.34,-1.98 -4.34,-4.42 0,-2.44 1.95,-4.42 4.34,-4.42 1.36,0 2.27,0.58 2.79,1.08 l 1.9,-1.83 C 23.47,17.69 21.89,17 20,17 c -3.87,0 -7,3.13 -7,7 0,3.87 3.13,7 7,7 4.04,0 6.72,-2.84 6.72,-6.84 0,-0.46 -0.05,-0.81 -0.11,-1.16 l -6.61,0 0,0 z" />
-    <path
-       style="fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:1"
        sketch:type="MSShapeGroup"
+       style="fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:1" />
+    <path
+       d="m 35,23 -2,0 0,-2 -2,0 0,2 -2,0 0,2 2,0 0,2 2,0 0,-2 2,0"
        id="path45"
-       d="m 35,23 -2,0 0,-2 -2,0 0,2 -2,0 0,2 2,0 0,2 2,0 0,-2 2,0" />
+       sketch:type="MSShapeGroup"
+       style="fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:1" />
   </g>
 </svg>

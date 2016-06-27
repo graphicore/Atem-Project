@@ -5,11 +5,11 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   viewBox="0 0 180 180"
-   id="RSSicon"
-   height="90"
+   version="1.1"
    width="90"
-   version="1.1">
+   height="90"
+   id="RSSicon"
+   viewBox="0 0 180 180">
   <metadata
      id="metadata34">
     <rdf:RDF>
@@ -25,59 +25,59 @@
   <defs
      id="defs3">
     <linearGradient
-       id="RSSg"
-       y2="0.91500002"
-       x2="0.91500002"
+       x1="0.085000001"
        y1="0.085000001"
-       x1="0.085000001">
+       x2="0.91500002"
+       y2="0.91500002"
+       id="RSSg">
       <stop
-         id="stop6"
+         offset="0.0"
          stop-color="#E3702D"
-         offset="0.0" />
+         id="stop6" />
       <stop
-         id="stop8"
+         offset="0.1071"
          stop-color="#EA7D31"
-         offset="0.1071" />
+         id="stop8" />
       <stop
-         id="stop10"
+         offset="0.3503"
          stop-color="#F69537"
-         offset="0.3503" />
+         id="stop10" />
       <stop
-         id="stop12"
+         offset="0.5"
          stop-color="#FB9E3A"
-         offset="0.5" />
+         id="stop12" />
       <stop
-         id="stop14"
+         offset="0.7016"
          stop-color="#EA7C31"
-         offset="0.7016" />
+         id="stop14" />
       <stop
-         id="stop16"
+         offset="0.8866"
          stop-color="#DE642B"
-         offset="0.8866" />
+         id="stop16" />
       <stop
-         id="stop18"
+         offset="1.0"
          stop-color="#D95B29"
-         offset="1.0" />
+         id="stop18" />
     </linearGradient>
   </defs>
   <g
-     style="fill:#000000"
-     transform="translate(2.5,-2.5)"
-     id="g3035">
+     id="g3035"
+     transform="matrix(0.93105671,0,0,0.93105671,11.55573,3.8772545)"
+     style="fill:#000000">
     <circle
-       style="fill:#000000"
-       cx="68"
-       cy="189"
-       r="24"
+       transform="translate(-44,-33)"
        id="circle26"
-       transform="translate(-44,-33)" />
+       r="24"
+       cy="189"
+       cx="68"
+       style="fill:#000000" />
     <path
-       style="fill:#000000"
-       d="M 116,180 H 82 A 82,82 0 0 0 0,98 V 64 a 116,116 0 0 1 116,116 z"
-       id="path28" />
+       id="path28"
+       d="m 116,180 -34,0 A 82,82 0 0 0 0,98 L 0,64 a 116,116 0 0 1 116,116 z"
+       style="fill:#000000" />
     <path
-       style="fill:#000000"
-       d="M 140,180 A 140,140 0 0 0 0,40 V 5 a 175,175 0 0 1 175,175 z"
-       id="path30" />
+       id="path30"
+       d="M 140,180 A 140,140 0 0 0 0,40 L 0,5 a 175,175 0 0 1 175,175 z"
+       style="fill:#000000" />
   </g>
 </svg>
