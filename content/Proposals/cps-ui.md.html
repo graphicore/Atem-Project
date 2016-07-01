@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>cps-ui.md | Proposals | Atem Tooling Expressive Models</title>
+    
+
+<link rel="alternate" type="application/atom+xml"
+      title="Atem-Project News Feed" href="../../news/feed.atom" />
+
+<link rel="stylesheet" type="text/css"
+      href="../../files/main.css" />
+
+
+</head>
+<body class="layout-left-column left-nav">
+  
+
+
+<header class="page">
+        <a title="Atem-Project on GitHub"
+           class="connect github" target="_blank"
+           href="https://github.com/graphicore/Atem-Project"
+           >Atem-Project on GitHub</a>
+        <a title="@AtemProject on Twitter"
+           class="connect twitter"
+           target="_blank"
+           href="https://twitter.com/AtemProject"
+           >@AtemProject on Twitter</a>
+        <a title="Subscribe to the News Feed"
+           class="connect feed"
+           href="../../news/feed.atom"
+           >Subscribe to the  News Feed</a>
+        <a title="Metapolator on Google+"
+           class="connect gplus"
+           target="_blank"
+           href="https://plus.google.com/u/0/communities/110027004108709154749"
+           >Metapolator on Google+</a>
+        <a title="Atem-Projekt on Patreon"
+           class="connect patreon"
+           target="_blank"
+           href="http://patreon.com/user?u=3557006"
+           >Atem-Projekt on Patreon</a>
+
+
+    <h1><a href="../../index.html"><img style="width:220px;height:220px"
+             class="logo"
+             alt="Atem Tooling Expressive Models"
+             src="../../files/Atem-Logo.svg" /></a></h1>
+    <nav class="main-menu">
+        <ul class="top-level"><!--
+        --><li class="">
+            <a href="../../index.html">Atem</a>
+            </li><!----><!--
+        --><li class="">
+            <a href="../Sub-Projects/index.html">Project</a>
+            </li><!----><li class="sub-level"><ul><!--
+        --><li class="">
+        <a href="../Concepts/index.html">Concepts</a></li><!--
+        --><li class="">
+        <a href="index.html">Proposals</a></li><!--
+        --><li class="">
+        <a href="../Manuals/index.html">Manuals</a></li><!--
+        --><li class="">
+        <a href="api-docs-generator.md.html">API</a></li><!----></ul></li><!----><!--
+        --><li class="">
+            <a href="../../help.md.html">Help</a>
+            </li><!----><!----></ul>
+    </nav>
+</header>
+
+  
+<nav class="sub">
+
+
+
+
+
+
+
+
+    
+    <h3>Contents in Proposals:</h3>
+    
+    
+    
+    <ul><li class="">
+    <a href="tasks.md.html">Tasks</a></li><li class="">
+    <a href="api-docs-generator.md.html">./api-docs-generator.md</a></li><li class="active">
+    <a href="cps-ui.md.html">./cps-ui.md</a></li><li class="">
+    <a href="website-generator.md.html">./website-generator.md</a></li></ul>
+    
+
+
+
+</nav><!--
+--><article>
+<h1>CPS User Interfaces</h1>
+
+<p>This is the most important feature at the time of writing this. It will
+enable the CPS author to define interfaces for a project directly within CPS.
+E.g. a handle to move a control point would be defined like this:</p>
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">element</span> {
+    onOffset<span style="color: #666666">:</span> Vector <span style="color: #666666">123</span> <span style="color: #666666">456</span>;
+    onUI<span style="color: #666666">:</span> UIVector <span style="color: #666666">100</span> <span style="color: #666666">100</span> onOffset;
+    <span style="color: #408080; font-style: italic">/*</span>
+<span style="color: #408080; font-style: italic">    We should unwrap the value of onUI, a Vector, as a value for on. Thus</span>
+<span style="color: #408080; font-style: italic">    there&#39;s no need for new validation/type checks in the object model.</span>
+<span style="color: #408080; font-style: italic">    */</span>
+    on<span style="color: #666666">:</span> onUI<span style="color: #666666">.</span>value;
+}
+</pre></div>
+
+<p><code>onUI</code> would be used to define a interface that changes a vector.
+That vector wold be displayed relative to <code>onOffset</code> on the canvas.</p>
+
+<p>Of course, vectors would not be the only elements that could be defined. The
+implementation is open for other types.</p>
+
+<p>Another possibly more powerful way could be to mark any value as ui element
+via a special wrapper:</p>
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">element</span> {
+    onOffset<span style="color: #666666">:</span> Vector <span style="color: #666666">123</span> <span style="color: #666666">456</span>;
+    <span style="color: #408080; font-style: italic">/*</span>
+<span style="color: #408080; font-style: italic">    similar like a List constructor, this style would allow us to define</span>
+<span style="color: #408080; font-style: italic">    custom parameters for the ui Element. The onOffset could be optional.</span>
+<span style="color: #408080; font-style: italic">    It would be much easier to add new UI types.</span>
+
+<span style="color: #408080; font-style: italic">    This could also make the transition to a new Property Language easier,</span>
+<span style="color: #408080; font-style: italic">    the added flexibility could be very helpful to get an idea of the needed</span>
+<span style="color: #408080; font-style: italic">    features in the new language.</span>
+<span style="color: #408080; font-style: italic">    */</span>
+    on<span style="color: #666666">:</span> (UI Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span> onOffset)<span style="color: #666666">.</span>value;
+}
+</pre></div>
+
+<p>I&#39;ll start with the first approach and then work my way up the second one.</p>
+
+<p>The user interface that is supposed to create real interfaces from these
+notions would be handed an OMA-Node, walk each of the entries in its
+StyleDict and if it finds one value that returns a UI-Element and nothing else and
+if the type of the UI-Element is supported by the user interface,
+it would display it accordingly.</p>
+
+<p>Pseudocode:</p>
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">// element is the OMA node</span>
+
+<span style="color: #008000; font-weight: bold">var</span> sd <span style="color: #666666">=</span> element.getComputedStyle();
+  , keys <span style="color: #666666">=</span> sd.keys
+  , k, val
+  , uiItems <span style="color: #666666">=</span> []
+  ;
+<span style="color: #008000; font-weight: bold">for</span>(k <span style="color: #008000; font-weight: bold">in</span> keys) {
+    val <span style="color: #666666">=</span> sd.get(k);
+    <span style="color: #008000; font-weight: bold">if</span>(<span style="color: #666666">!</span>uiAPI.isUI(val))
+        <span style="color: #008000; font-weight: bold">continue</span>;
+    <span style="color: #408080; font-style: italic">// it&#39;s an UI item</span>
+    <span style="color: #008000; font-weight: bold">if</span>(<span style="color: #666666">!</span>isSupported(val.type))
+        <span style="color: #008000; font-weight: bold">continue</span>;
+    uiItems.push(val);
+}
+
+<span style="color: #408080; font-style: italic">// now render each UI-Item</span>
+
+<span style="color: #408080; font-style: italic">// then, call val.update(newValue) on changes.</span>
+
+<span style="color: #408080; font-style: italic">// The UI-Item should ideally update its position when the model updates</span>
+<span style="color: #408080; font-style: italic">// but that&#39;s only good if the roundtrip time is fast enough.</span>
+<span style="color: #408080; font-style: italic">// That means, the ui will only send changes, the position will then update</span>
+<span style="color: #408080; font-style: italic">// on answer. Which is a bit unintuitive for ui programming, however, it</span>
+<span style="color: #408080; font-style: italic">// ensures that always the correct data is visualized and it automatically</span>
+<span style="color: #408080; font-style: italic">// syncs all the other instances where the uiElement is used.</span>
+<span style="color: #408080; font-style: italic">// For the sake of more immediate feedback, the actually dragged ui item</span>
+<span style="color: #408080; font-style: italic">// could change directly on drag (and thus be out of sync with the model)</span>
+<span style="color: #408080; font-style: italic">// however, that&#39;s just a workaround, and it would need a final, explicit,</span>
+<span style="color: #408080; font-style: italic">// manual step of syncing, when editing is finished.</span>
+</pre></div>
+
+<p>A UI-Element would have a simple <code>update(value)</code> method. How value is
+interpreted exactly is dependent on the type.</p>
+
+<h2>The Hairy Part</h2>
+
+<p>Updating the value must feed back into the property value that created the
+original UI-Element. Thus, we&#39;ll have to be able to go back from our <q>stack</q>
+to the <q>tokenized</q> <code>AST</code> version and from there to a text representation.</p>
+
+<p>Why is that:</p>
+
+<h3>When parsing we do:</h3>
+
+<ol>
+<li>take a <code>input string</code></li>
+<li>tokenize the input string into something like an Abstract Syntax Tree (<code>AST</code>)</li>
+<li>create a <code>postfix stack</code> for interpretation.</li>
+</ol>
+
+<h3>Currently</h3>
+
+<p>The <code>input string</code> is what we display in the CPS-panel or
+what we output when serializing the CPS.</p>
+
+<p>The <code>AST</code> is just a intermediate representation, we immediately
+transform it into the <code>postfix stack</code>. It&#39;s possible that we&#39;ll need a more
+sophisticated <code>AST</code> representation here.</p>
+
+<p>When the <code>AST</code> is evaluated, the UI element — and all other non-primitive
+elements — are created in the operation. This means for us, that we can here
+store a reference to the origin of the element, i.e. the <code>Stack</code> instance,
+as the container Element for the <code>postfix stack</code> is called currently.</p>
+
+<h3>Then</h3>
+
+<p>What we will to do is to use the <code>AST</code> as a source for all CPS Property
+Language representations. Because, then we can change the definition of
+the <em>intrinsic</em> value of the UI element in the <code>AST</code>. And all representations
+can follow. Also, the <code>AST</code> is the right place to do this, because it&#39;s
+<strong>a)</strong> good to handle from code <strong>b)</strong> has still enough of the syntax
+information to reproduce the language.</p>
+
+<p>Note that such a change has to trigger a change-event to notify all consumers
+of the <code>Property</code> element. This is something that is not yet easily possible,
+because the <code>Property</code> and thus <code>PropertyValue</code> elements are considered
+<em>immutable</em>. When we do this we can consider them only <q>shallow immutable</q>
+or we have to replace them with new Instances. The latter may still reuse
+the stack of the prior version, so this could be feasible indeed.</p>
+
+<h4>Intrinsic Value</h4>
+
+<p>The <code>intrinsic value</code> of the UI-Element can be initiated also with a
+name token that references the initial value from somewhere else. But, the
+UI-Element will not change the definition of a referenced element. It will
+instead replace the the name token with it&#39;s own definition of an intrinsic
+value. Changing referenced values would cause confusion and unnecessary
+complexity e.g. when two UI-elements reference the same value or when a
+reference is defined via other references or some construct like the above
+mentioned <code>onUI.value</code>.</p>
+
+<p>UI elements will only have the power to change their own <code>AST</code>, where they
+have been defined, and there ideally only their <code>intrinsic value</code>.</p>
+
+<p>Therefore we&#39;ll have to do some more advanced analysis, to know which part
+of the <code>AST</code> has to be replaced when the UI Value is updated.</p>
+
+<p>If each element in the <code>AST</code> would have it&#39;s original <code>AST</code>-index and an
+element that consumed some original or created elements would have a range
+from first to last consumed elements accumulated, ideally the range
+works out to know which part of the <code>AST</code> have to be replace. There shouldn&#39;t
+be any difficulties caused by the tokens getting reordered in the postfix
+stack, check this when implementing! Comments in between might get lost
+though! I don&#39;t care in this iteration, we can be smart about this later.
+For the example of the UI-Vector, the vector that makes up the initial
+intrinsic value may have three <code>Vector 10 20</code> or one <code>anotherVector</code> or
+any number of items <code>Vector (10 * 3 + 4 / anotherNumber) 0</code> in its range.
+We must also take care that we don&#39;t mix up ranges from different stacks,
+when pulling in references, but that&#39;s obvious.</p>
+
+</article>
+
+  
+<footer class="page"><a href="../../sitemap.html">Sitemap</a>
+    
+    <a href="../../impressum.md.html">Impressum</a>
+    © <a href="https://github.com/graphicore/Atem-Project">The Atem-Project Authors</a>
+</footer>
+
+</body>
+</html>
