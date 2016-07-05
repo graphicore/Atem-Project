@@ -3,6 +3,7 @@
 html {
    font-family: 'Alegreya Sans', sans-serif;
    overflow-y: scroll;
+   font-size: 1.4em;
 }
 body {
    max-width: 1000px;
@@ -31,8 +32,10 @@ article.blogpost .content {
       A line of text should not be too long
       like  but works good to get the after link on the
       right side of the page
-    */
-   max-width: 40em;
+   */
+   box-sizing: border-box;
+   max-width: 30em;
+   width: 100%;
 }
 
 nav.sub, .layout-left-column article {
@@ -51,16 +54,18 @@ article.blogpost > *,
 nav.sub {
    padding: 0 .3em;
 }
+.layout-left-column article {
+   padding: 0 .3em 0 .7em;
+}
+
 
 
 nav.sub {
    /*
-    * This leaves 48em space for other content in the row
-    * The article width is however 40em at the moment.
-    * So, we have some room to the right. But  didn't want to
-    * make the navigation so much wider.
+    * This leaves 30em space for other content in the row
+    * The article width is however 30em at the moment.
     */
-   max-width: calc(100% - 48em);
+   max-width: calc(100% - 30em);
    min-width: 12em;
    width:100%;
    background: #EEE;
@@ -84,6 +89,7 @@ header.page{
    border-bottom: 3px solid black;
    position: relative;
    margin-bottom: 2.5em;
+   font-size: .9em;
 }
 .layout-left-column header.page {
    margin-bottom: 1em;
@@ -271,8 +277,15 @@ blockquote em, blockquote strong {
    color: black;
 }
 
-code {
+code, div.code-highlighted{
    font-family: monospace;
    background: #EEE;
+}
+
+code {
    padding: 0 .4em;
+}
+
+div.code-highlighted {
+   overflow-x: auto;
 }
