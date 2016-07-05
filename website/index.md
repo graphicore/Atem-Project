@@ -1,21 +1,35 @@
 ```yaml
-# template: main.html
 user_menu: True
 ```
 # Atem Tooling Expressive Models
 
-We explore new data models and make good tooling for this.
+We make power tools for creative minds, explore new data models and create sublime tooling.
 
-Our aim is making software that empowers the user, that is simple to use
-by default but is unlimited when more might is needed. Software that
-helps the user to grow more knowledge and to become more skillful.
+The **core task** of the current phase is developing the **Atem-CPS** technology
+stack and to prove the superiority of the [concept]({{ url_for('content/Concepts', filename='Atem-CPS.md') }})
+for complex design tasks like parametric type design.
+
+Our aim is making software that *empowers the user*; that is *simple to use
+by default but unlimited when more might is needed*. Software that
+helps the user to **grow more knowledge and to become more skillful.**
+
+See the [Projects]({{ url_for('content/Sub-Projects:index') }}) page for our actual output.
+
+### Fonts for the world!
 
 The root of Atem is [Metapolator](http://metapolator.com) and our focus
-is on making better tools for **type design and typography**. But, Atem is
-not limited to any specific use. We build big applications and
-smaller tech-demos to spark inspiration for **other domains.**
+is on making better tools for **type design and typography**.
+Atem is an infrastructure project that will have the most impact in
+the parts of the world with *complex scripts* that need *big fonts*
+with 1,000s or 10,000s of glyphs.
 
-For more details see [Vision]({{ url_for('content/Vision:index') }}).
+### More than fonts.
+
+Atem is not limited to any specific use. We build big applications and
+smaller tech-demos to spark inspiration for **other domains.**<br />
+*Build your own creative applications using Atem concepts and tooling.*
+
+See [Vision]({{ url_for('content/Vision:index') }}) for more details.
 
 ## Community and Free Software
 
