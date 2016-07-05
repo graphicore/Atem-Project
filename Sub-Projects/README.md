@@ -6,7 +6,13 @@ link_name: Project
 
 # Atem-Project is organized in sub-projects
 
-The separation into Applications, Main Libraries and Basic/Helper Libraries is somewhat arbitrary, don't derive to much meaning from it.
+The separation into Applications, Main Libraries and Basic/Helper Libraries
+is somewhat arbitrary, don't derive to much meaning from it.
+
+At the moment we concentrate on **JavaScript** implementations mainly
+targeted at the HTML5 platform and Node.js. Some of the projects below
+are written in other in other languages. We are not married to JavaScript,
+when the time is right we may use other technologies.
 
 {%- set listing = [
         ['Applications', 'applications', None,
@@ -14,7 +20,7 @@ The separation into Applications, Main Libraries and Basic/Helper Libraries is s
                 ['Metapolator', 'https://github.com/metapolator/metapolator', 'Design fonts and font families faster; Metapolator is the origin of Atem.', 'http://metapolator.com']
               , ['Atem-MOM-Developer-Tool', 'https://github.com/metapolator/Atem-MOM-Developer-Tool', 'Graphical inspection and manipulation of CPS and the Metapolator Object Model.', None]
               , ['Bauhaus-Emblem-Font', 'https://github.com/graphicore/Bauhaus-Emblem-Font', 'Technology demo, learning tool, next generation (type-)design Application, Inspiration.', None]
-            ]
+              , ['Atem-MOM-Glyphs-Integration', 'https://github.com/graphicore/Atem-MOM-Glyphs-Integration',  'Make the Metapolator Object Model available in the Glyphs font editor.', None]            ]
         ]
       , ['Main Libraries', 'libraries', 'The building blocks for Atem-Applications.',
             [
@@ -37,6 +43,7 @@ The separation into Applications, Main Libraries and Basic/Helper Libraries is s
               , ['Atem-Math-Tools', 'https://github.com/graphicore/Atem-Math-Tools', 'Collection of (2d graphics) math modules used in Atem.', None]
               , ['Atem-RequireJS-Config', 'https://github.com/graphicore/Atem-RequireJS-Config/', 'common RequireJS configuration for all Atem sub-projects.', None]
               , ['Atem-Logging', 'https://github.com/graphicore/ Atem-Logging', 'Versatile logging facility based on util-logging adding some specifics for Atem.', None]
+              , ['Atem-Webgenerator', 'https://github.com/graphicore/Atem-Webgenerator', 'Static site generator written in Python based on Frozen-Flask. Used to make http://atem.graphicore.de', None]
             ]
         ]
     ]
