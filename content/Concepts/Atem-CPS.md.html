@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Atem-CPS.md | Concepts | Atem Tooling Expressive Models</title>
+    
+
+<link rel="alternate" type="application/atom+xml"
+      title="Atem-Project News Feed" href="../../news/feed.atom" />
+
+<link rel="stylesheet" type="text/css"
+      href="../../files/main.css" />
+
+
+</head>
+<body class="layout-left-column left-nav">
+  
+
+
+<header class="page">
+        <a title="Atem-Project on GitHub"
+           class="connect github" target="_blank"
+           href="https://github.com/graphicore/Atem-Project"
+           >Atem-Project on GitHub</a>
+        <a title="@AtemProject on Twitter"
+           class="connect twitter"
+           target="_blank"
+           href="https://twitter.com/AtemProject"
+           >@AtemProject on Twitter</a>
+        <a title="Subscribe to the News Feed"
+           class="connect feed"
+           href="../../news/feed.atom"
+           >Subscribe to the  News Feed</a>
+        <a title="Metapolator on Google+"
+           class="connect gplus"
+           target="_blank"
+           href="https://plus.google.com/u/0/communities/110027004108709154749"
+           >Metapolator on Google+</a>
+        <a title="Atem-Projekt on Patreon"
+           class="connect patreon"
+           target="_blank"
+           href="http://patreon.com/user?u=3557006"
+           >Atem-Projekt on Patreon</a>
+
+
+    <h1><a href="../../index.html"><img style="width:240px;height:240px"
+             class="logo"
+             alt="Atem Tooling Expressive Models"
+             src="../../files/Atem-Logo.svg" /></a></h1>
+    <nav class="main-menu">
+        <ul class="top-level"><!--
+        --><li class="">
+            <a href="../../index.html">Atem</a>
+            </li><!----><!--
+        --><li class="">
+            <a href="../Sub-Projects/index.html">Project</a>
+            </li><!----><li class="sub-level"><ul><!--
+        --><li class="">
+        <a href="index.html">Concepts</a></li><!--
+        --><li class="">
+        <a href="../Proposals/index.html">Proposals</a></li><!--
+        --><li class="">
+        <a href="../Manuals/index.html">Manuals</a></li><!--
+        --><li class="">
+        <a href="../Proposals/api-docs-generator.md.html">API</a></li><!----></ul></li><!----><!--
+        --><li class="">
+            <a href="../../help.md.html">Help</a>
+            </li><!----><!----></ul>
+    </nav>
+</header>
+
+  
+<nav class="sub">
+
+
+
+
+
+
+
+
+    
+    <h3>Contents in Concepts:</h3>
+    
+    
+    
+    <ul><li class="active">
+    <a href="Atem-CPS.md.html">./Atem-CPS.md</a></li><li class="">
+    <a href="Developer_Mindset.md.html">./Developer_Mindset.md</a></li></ul>
+    
+
+
+
+</nav><!--
+--><article>
+<h1>Atem-CPS and OMA</h1>
+
+<p><em>This is an introduction to the concepts of CPS and OMA by comparison with
+CSS and the DOM.</em></p>
+
+<p>OMA and CPS are conceptually influenced by the interplay of <a href="https://en.wikipedia.org/wiki/Document_Object_Model">DOM</a>
+(Document Object Model) and <a href="https://en.wikipedia.org/wiki/Cascading_Style_Sheets">CSS</a>
+(Cascading Style Sheets) by the <a href="https://www.w3.org/">W3C</a>.</p>
+
+<p>CPS stands for <strong>Cascading Parameters Sheets</strong> we kept the name similar to
+CSS on purpose. OMA stands for <strong>Object Model API</strong> and is the conceptual
+counterpart to the DOM.</p>
+
+<h2>Similarities to DOM and CSS</h2>
+
+<p>CPS and CSS are used to associate <code>properties</code> with nodes in the OMA/DOM
+tree structure by attaching <code>selectors</code> to blocks of <code>rules</code>.</p>
+
+<p>A <code>property</code> is made of a <code>name</code> and a <code>value</code>.</p>
+
+<p>A <code>rule</code> is a collection of <code>properties</code> plus a  list of <code>selectors</code>.</p>
+
+<p><a href="https://www.w3.org/TR/CSS22/selector.html">CSS-Selectors</a>:</p>
+
+<blockquote>
+<p>In CSS, pattern matching [= selectors] rules determine which style rules
+  apply to elements in the document tree. These patterns, called selectors,
+  may range from simple element names to rich contextual patterns. If all
+  conditions in the pattern are true for a certain element, the selector
+  matches the element.</p>
+</blockquote>
+
+<p>Selectors are a query language for selecting nodes in a DOM-tree,
+they are similar to <a href="https://en.wikipedia.org/wiki/XPath">XPath</a> but simpler.
+If a selector of a rule matches a node in the DOM tree, the rule and
+therefore its properties apply to the node.</p>
+
+<p>When many rules apply to the same node the <code>specificity</code> of the respective
+matching selector defines in which order the rules are applied. The <strong>more
+specific rules are applied first</strong>. If the rule that is applied first misses
+a property definition, the second/next-specific rule is applied and so on.
+<strong>This fallback mechanism is called cascading.</strong></p>
+
+<h2>Differences to DOM and CSS</h2>
+
+<p>We made adjustments to the DOM concept and created a whole new kind of
+computing. We believe this is particularly well suited for the next generation
+of parametric design tools.</p>
+
+<h3>OMA is an Abstraction</h3>
+
+<p>The DOM is made of element types that are <em>specifically</em> created to describe
+web pages. It defines elements like <code>&lt;article&gt;</code>, <code>&lt;h1&gt;</code> to <code>&lt;h5&gt;</code> for
+headlines or <code>&lt;p&gt;</code> for paragraphs.</p>
+
+<p>The OMA is just an abstract API that is used as a base to define domain specific
+object models. E.g. for type design applications we created the MOM, <strong>Metapolator
+Object Model</strong> and for the <em>Bauhaus Emblem Font</em>, there is the BEOM <strong>Bauhaus Emblem
+Object Model</strong>.</p>
+
+<p>The OMA defines all of the nuts and bolts needed to create a domain
+specific model that is connected to CPS and to our tooling. This way we can
+act as <strong>a catalyst to jump-start new domains of parametric tooling.</strong> More
+and better tools will help all implementors of the OMA.</p>
+
+<h3>Properties are Programming and Math</h3>
+
+<p>In CSS property values are very specific for the domain of <q>styling</q> HTML-Documents.
+I.e. setting colors, margins, positions and alignments. The available properties
+are firmly defined and are limited in their expressiveness. E.g. the <code>background</code>
+property can only define the the background of a DOM element, nothing else.</p>
+
+<p>In CPS, in turn, <code>Property Values</code> are defined in a small programming language,
+the <strong>Atem Property Language</strong>. This language can be used to define math formulae and
+other expressions. The <code>Property Names</code> are free to choose — though, depending
+on the OMA-Implementation some names are type-checked for specific element types.</p>
+
+<p>A <code>Property</code> can be associated with many nodes, when the selectors of its
+rule match many nodes. A formulae is always executed in the context of the
+node to which it is applied. This means, it will yield different values,
+depending on the state of the node. But, it is side-effect free. That means
+a <code>Property</code> <strong>can&#39;t</strong> change the state of its node, it can only define its
+own value. It also is <code>idempotent</code>, meaning that given the same state when
+calculating the property, it will always result in the same value.</p>
+
+<p><em>Most importantly</em>, the code of a <code>Property Value</code> can <strong>reference all the
+properties of any other node in the document tree.</strong> This opens the doors
+to many powerful ways of working. We&#39;re still figuring out new ways on how
+to use this and whether this was a great idea or a terrible one ;-).</p>
+
+<h3>For Collaboration</h3>
+
+<p>One way to use this is to implement easy to use, higher level properties,
+sometimes called <em><q>parameters</q></em> via more sophisticated, lower level properties.
+In this scenario, the lower level formula would reference a to-be-defined
+property — like a simple numeric value called <code>fontWeight</code> — in its calculation.
+This is similar to a function that requires a specific argument and — for
+example — will be <strong>a great way of collaboration between a developer and
+a designer.</strong></p>
+
+<p>The designer will only be presented the higher level user interfaces that
+are defined in CPS by the developer. But, when necessary, the designer can
+<strong>easily drill down and override any property,</strong> either for special cases
+or to change fundamental parts of the CPS.</p>
+
+<p>Visit the <a href="../Vision/index.html">Vision</a> page for more ideas,
+like a fully <em>non-destructive font-family design workflow</em>.</p>
+
+</article>
+
+  
+<footer class="page"><a href="../../sitemap.html">Sitemap</a>
+    
+    <a href="../../impressum.md.html">Impressum</a>
+    © <a href="https://github.com/graphicore/Atem-Project">The Atem-Project Authors</a>
+</footer>
+
+</body>
+</html>

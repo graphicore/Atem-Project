@@ -43,7 +43,7 @@
            >Atem-Projekt on Patreon</a>
 
 
-    <h1><a href="../../index.html"><img style="width:220px;height:220px"
+    <h1><a href="../../index.html"><img style="width:240px;height:240px"
              class="logo"
              alt="Atem Tooling Expressive Models"
              src="../../files/Atem-Logo.svg" /></a></h1>
@@ -145,7 +145,7 @@ not in Atem-Project at all.</p>
 <p>There must be a directory structure to cope with the different parts of
 the page:</p>
 
-<pre><code>index.html
+<div class="code-highlighted"><pre>index.html
 js ?
 css
 assets ?
@@ -169,7 +169,7 @@ docs/
     # `current` to a tag folder if the tag === HEAD. That way, we would
     # also &quot;freeze&quot; that old documentation.
     v0.0.1
-    ...</code></pre>
+    ...</pre></div>
 
 <p>I think <code>dist</code> won&#39;t be handled by this in the beginning, but actually having
 a central build tool for distribution, documentation and website (communication)
@@ -213,7 +213,7 @@ be used for directory crawling outputs.</li>
 
 <h2>remember setup steps for travis ...</h2>
 
-<pre><code># http://flask.pocoo.org/docs/0.10/installation/#installation
+<div class="code-highlighted"><pre># http://flask.pocoo.org/docs/0.10/installation/#installation
 # Atem-Project/website/generator$ virtualenv venv
 # need py &gt;=3 anyway, so pyvenv seems better than virtualenv
 # Atem-Project$ pyvenv-3.5 website/generator/venv
@@ -224,7 +224,7 @@ Atem-Project$ pip install pyyaml
 Atem-Project$ pip install misaka # markdown
 Atem-Project$ pip install houdini.py # html escaping in mardow synax highlighter
 Atem-Project$ pip install Pygments # syntax highlighting
-Atem-Project$ pip install Frozen-Flask</code></pre>
+Atem-Project$ pip install Frozen-Flask</pre></div>
 
 <h2>custom template variables</h2>
 
@@ -234,7 +234,7 @@ everything in between is attempted to be parsed as yaml and if successful
 used as template variables and removed before rendering the document.
 Otherwise, the block remains unchanged in the document. This is cool,
 because github will syntax highlight the configuration properly:</p>
-<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>this: will
+<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>this: will
 be: configuration
 </pre></div>
 
