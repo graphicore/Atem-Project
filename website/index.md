@@ -3,7 +3,7 @@ user_menu: True
 ```
 # Atem Tooling Expressive Models
 
-We make power tools for creative minds, explore new data models and create sublime tooling.
+We make power tools for creative minds by exploring new data models and creating sublime tooling.
 
 The **core task** of the current phase is developing the **Atem-CPS** technology
 stack and to prove the superiority of the [concept]({{ url_for('content/Concepts', filename='Atem-CPS.md') }})
