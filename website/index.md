@@ -37,7 +37,7 @@ Atem is all about making great and Free Software—**“free” as in “free sp
 collaborate as a community, using git as our main tool.
 The [contents](https://github.com/graphicore/Atem-Project) and
 [code](https://github.com/graphicore/Atem-Webgenerator) of this website
-are hosted on GitHub. Think of it like a **Wiki**, but with a worklfow
+are hosted on GitHub. Think of it like a **Wiki**, but with a workflow
 as in Open Source Software.
 
 Of course all source code of our [sub-projects]({{ url_for('content/Sub-Projects:index') }})
