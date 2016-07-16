@@ -1,5 +1,8 @@
 # CPS User Interfaces
 
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/drdI_I78F20?rel=0" frameborder="0" allowfullscreen></iframe>
+
+[youtu.be/drdI_I78F20](https://youtu.be/drdI_I78F20)
 
 This is the most important feature at the time of writing this. It will
 enable the CPS author to define interfaces for a project directly within CPS.
