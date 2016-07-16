@@ -1,48 +1,47 @@
 # Support Atem
 
-Atem is a project that creates [Free Software](https://www.gnu.org/philosophy/free-sw.en.html).
+Atem is a project that is [Free Software](https://www.gnu.org/philosophy/free-sw.en.html).
 
 > “Free software” means software that *respects users' freedom and community.*
 Roughly, it means that the users have **the freedom to run, copy, distribute, study, change and improve the software.**
 Thus, “free software” is *a matter of liberty, not price*. To understand the concept, you should think of “free” **as in “free speech,” not as in “free beer”**.
 We sometimes call it “libre software” to show we do not mean it is gratis.
 
-Therefore, funding our work is not as straight forward as selling proprietary licenses.
+This means that you are free to collaborate with us on the project directly. 
 
-If you like [what]({{url_for('content/Vision:index')}}) we [do]({{ url_for('content/Sub-Projects:index') }}),
-and want us to **keep doing it** or if you use our software in a professional workflow then
-**fund&nbsp;us**. With more funds we can advance Atem more steady and faster. Consider one of
-the suggestions below to support us.
+Have a look at the [Collaborate]({{ url_for('__root__', filename="collaborate.md") }}) page for details of *"hands-on"* ways to support the project. 
 
-Of course, this list is not exhaustive.<br />
-If you have another idea on how to support us, [make contact]({{url_for('__root__', filename='help.md')}}) and let us know!
+If you read this far, you could do us a great favor by just taking 2 minutes right now to tweet or post on facebook about the project, or email a link out to 2 friends of yours that you think might also be interested.
 
-## Become a Patron
+## Buy a Project Subscription
 
-From [Wikipedia](https://en.wikipedia.org/wiki/Patreon):
+Respecting your freedom and community also means funding our work is not as straight forward as selling restrictive licenses.
+
+If you like [what we do]({{url_for('content/Vision:index')}}) and want us to keep doing it, then please **become a Patron.**
+
+Its easy to support the project with a monthly subscription via [Patreon.](https://en.wikipedia.org/wiki/Patreon)
+
 > Patreon is a *crowd-funding platform* popular with YouTube content creators,
 musicians, and webcomic artists. It allows artists to *obtain funding from
 their fans or patrons*, on a **recurring basis**, or **per work of art**.
 
-Here: **<a href="http://patreon.com/user?u=3557006" target="_blank">Atem-Project on Patreon</a>**
+**<a href="http://patreon.com/user?u=3557006" target="_blank">Atem Project on Patreon</a>**
 
-The receiver of your funding is [Lasse](http://graphicore.de/en/page/lasse).
+Patrons will get special access to Atem online and live events, and influence the project schedule and roadmap. 
 
-## Contracting
+Currently the subscription funds [Lasse](http://graphicore.de/en/page/lasse) directly.
 
-Contact [Lasse](http://graphicore.de/en/page/lasse) who is free for contracting,
-especially if you want a project of yours to be build with Atem technology or
-if you want to sponsor a particular feature.
+## Software Development Services
 
-As appropriate, we can help you finding other developers who'd like to fill in.
+If you use Atem at work, or are considering it, please contact [Lasse](http://graphicore.de/en/page/lasse) directly.
 
-## Spread the Word
+Using his services will surely make your product better, and can begin with a short video-call consultation. 
+Lasse is currently available for long-term development contracts beginning in November 2016.
 
-You would render us a great favor just by sending a link out to a friend of yours, who you think might be interested.
+If your project requires more time than one person can provide, Lasse can draw on a network of other developers familiar with the technology who can join your project and hit the ground running.
 
-If you happen to be a *blogger* or a *journalist* and are interested in featuring the project, we'll **gladly answer** all your questions.
+## Contact Us
 
-## Collaborate
+If you are a *journalist* would like to write a feature about the project, we'll **gladly answer** all your questions.
 
-Have a look at the [Collaborate]({{ url_for('__root__', filename="collaborate.md") }}) page,
-If you think more of a *"hands-on"* approach to support us.
+If you have any other ideas about how to support us, [drop us a line]({{url_for('__root__', filename='help.md')}}) and let us know!
