@@ -105,8 +105,19 @@
 enable the CPS author to define interfaces for a project directly within CPS.
 E.g. a handle to move a control point would be defined like this:</p>
 <div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">element</span> {
-    onOffset<span style="color: #666666">:</span> Vector <span style="color: #666666">123</span> <span style="color: #666666">456</span>;
-    onUI<span style="color: #666666">:</span> UIVector <span style="color: #666666">100</span> <span style="color: #666666">100</span> onOffset;
+    onOffset<span style="color: #666666">:</span> Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span>;
+    <span style="color: #408080; font-style: italic">/*</span>
+<span style="color: #408080; font-style: italic">    similar to a List constructor, this style would allow us to define</span>
+<span style="color: #408080; font-style: italic">    custom parameters for the ui Element.</span>
+<span style="color: #408080; font-style: italic">    It would be relatively easy to add new UI types, the `UI` constructor</span>
+<span style="color: #408080; font-style: italic">    acts just as a marker and the final semantic can be figured out on a</span>
+<span style="color: #408080; font-style: italic">    much higher level, in the application UI.</span>
+
+<span style="color: #408080; font-style: italic">    This could also make the transition to a new Property Language easier,</span>
+<span style="color: #408080; font-style: italic">    the added flexibility could be very helpful to get an idea of the needed</span>
+<span style="color: #408080; font-style: italic">    features in the new language.</span>
+<span style="color: #408080; font-style: italic">    */</span>
+    onUI<span style="color: #666666">:</span> UI Vector <span style="color: #666666">123</span> <span style="color: #666666">456</span> onOffset;
     <span style="color: #408080; font-style: italic">/*</span>
 <span style="color: #408080; font-style: italic">    We should unwrap the value of onUI, a Vector, as a value for on. Thus</span>
 <span style="color: #408080; font-style: italic">    there&#39;s no need for new validation/type checks in the object model.</span>
@@ -116,35 +127,42 @@ E.g. a handle to move a control point would be defined like this:</p>
 </pre></div>
 
 <p><code>onUI</code> would be used to define a interface that changes a vector.
-That vector wold be displayed relative to <code>onOffset</code> on the canvas.</p>
+That vector wold be displayed relative to <code>onOffset</code> on the canvas.
+<code>onOffset</code> would be optional, but useful in many cases.</p>
+
+<p>To create a absolute-coordinates from such an <code>UI Vector</code> the relative part
+would be added later. <code>on: onUI.value + onUI.arguments[1];</code>. In this case
+all arguments to the <code>UI</code> constructor can be accessed via it&#39;s <code>arguments</code>
+property, a list.</p>
+
+<p>When the <code>ui</code> property here is changed by the user interface it caused, say
+the coordinate is dragged by <code>x = -23</code> and <code>y = 44</code> the definition of the
+CPS above is changed to:</p>
+<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">element</span> {
+    offset<span style="color: #666666">:</span> Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span>;
+    ui<span style="color: #666666">:</span> UI (Vector <span style="color: #666666">100</span> <span style="color: #666666">500</span>) offset;
+    on<span style="color: #666666">:</span> onUI<span style="color: #666666">.</span>value;
+}
+</pre></div>
+
+<p>The important part is: <code>ui: UI (Vector 100 500) offset;</code>. the old, initial
+definition of the Vector <code>Vector 123 456</code> got replaced by <code>(Vector 100 500)</code>.
+Note the added parenthesis, which are giving us the confidence that we don&#39;t
+change the mean of the expression further.</p>
 
 <p>Of course, vectors would not be the only elements that could be defined. The
 implementation is open for other types.</p>
 
-<p>Another possibly more powerful way could be to mark any value as ui element
-via a special wrapper:</p>
-<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">element</span> {
-    onOffset<span style="color: #666666">:</span> Vector <span style="color: #666666">123</span> <span style="color: #666666">456</span>;
-    <span style="color: #408080; font-style: italic">/*</span>
-<span style="color: #408080; font-style: italic">    similar like a List constructor, this style would allow us to define</span>
-<span style="color: #408080; font-style: italic">    custom parameters for the ui Element. The onOffset could be optional.</span>
-<span style="color: #408080; font-style: italic">    It would be much easier to add new UI types.</span>
+<p>In this case, the user interface code would make use of the <code>offset</code> argument,
+or for that matter, of all the other arguments passed to <code>UI</code>.</p>
 
-<span style="color: #408080; font-style: italic">    This could also make the transition to a new Property Language easier,</span>
-<span style="color: #408080; font-style: italic">    the added flexibility could be very helpful to get an idea of the needed</span>
-<span style="color: #408080; font-style: italic">    features in the new language.</span>
-<span style="color: #408080; font-style: italic">    */</span>
-    on<span style="color: #666666">:</span> (UI Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span> onOffset)<span style="color: #666666">.</span>value;
-}
-</pre></div>
-
-<p>I&#39;ll start with the first approach and then work my way up the second one.</p>
+<h2>Using the UI values</h2>
 
 <p>The user interface that is supposed to create real interfaces from these
 notions would be handed an OMA-Node, walk each of the entries in its
-StyleDict and if it finds one value that returns a UI-Element and nothing else and
-if the type of the UI-Element is supported by the user interface,
-it would display it accordingly.</p>
+StyleDict and if it finds one value that returns a <code>UI-Instance</code> and
+nothing else and if the type of the <code>UI-Instance</code> is supported by the user
+interface, it would display it accordingly.</p>
 
 <p>Pseudocode:</p>
 <div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">// element is the OMA node</span>
@@ -156,7 +174,7 @@ it would display it accordingly.</p>
   ;
 <span style="color: #008000; font-weight: bold">for</span>(k <span style="color: #008000; font-weight: bold">in</span> keys) {
     val <span style="color: #666666">=</span> sd.get(k);
-    <span style="color: #008000; font-weight: bold">if</span>(<span style="color: #666666">!</span>uiAPI.isUI(val))
+    <span style="color: #008000; font-weight: bold">if</span>(<span style="color: #666666">!</span>isUI(val))
         <span style="color: #008000; font-weight: bold">continue</span>;
     <span style="color: #408080; font-style: italic">// it&#39;s an UI item</span>
     <span style="color: #008000; font-weight: bold">if</span>(<span style="color: #666666">!</span>isSupported(val.type))
@@ -165,28 +183,12 @@ it would display it accordingly.</p>
 }
 
 <span style="color: #408080; font-style: italic">// now render each UI-Item</span>
-
-<span style="color: #408080; font-style: italic">// then, call val.update(newValue) on changes.</span>
-
-<span style="color: #408080; font-style: italic">// The UI-Item should ideally update its position when the model updates</span>
-<span style="color: #408080; font-style: italic">// but that&#39;s only good if the roundtrip time is fast enough.</span>
-<span style="color: #408080; font-style: italic">// That means, the ui will only send changes, the position will then update</span>
-<span style="color: #408080; font-style: italic">// on answer. Which is a bit unintuitive for ui programming, however, it</span>
-<span style="color: #408080; font-style: italic">// ensures that always the correct data is visualized and it automatically</span>
-<span style="color: #408080; font-style: italic">// syncs all the other instances where the uiElement is used.</span>
-<span style="color: #408080; font-style: italic">// For the sake of more immediate feedback, the actually dragged ui item</span>
-<span style="color: #408080; font-style: italic">// could change directly on drag (and thus be out of sync with the model)</span>
-<span style="color: #408080; font-style: italic">// however, that&#39;s just a workaround, and it would need a final, explicit,</span>
-<span style="color: #408080; font-style: italic">// manual step of syncing, when editing is finished.</span>
 </pre></div>
-
-<p>A UI-Element would have a simple <code>update(value)</code> method. How value is
-interpreted exactly is dependent on the type.</p>
 
 <h2>The Hairy Part</h2>
 
-<p>Updating the value must feed back into the property value that created the
-original UI-Element. Thus, we&#39;ll have to be able to go back from our <q>stack</q>
+<p>Updating the value must feed back into the property value <strong>that created the
+original UI-Element</strong>. Thus, we&#39;ll have to be able to go back from our <q>stack</q>
 to the <q>tokenized</q> <code>AST</code> version and from there to a text representation.</p>
 
 <p>Why is that:</p>
@@ -240,24 +242,192 @@ complexity e.g. when two UI-elements reference the same value or when a
 reference is defined via other references or some construct like the above
 mentioned <code>onUI.value</code>.</p>
 
-<p>UI elements will only have the power to change their own <code>AST</code>, where they
-have been defined, and there ideally only their <code>intrinsic value</code>.</p>
+<p>UI elements will only have change their own <code>AST</code>/<code>astOperation</code>, where they
+have been defined.</p>
 
 <p>Therefore we&#39;ll have to do some more advanced analysis, to know which part
 of the <code>AST</code> has to be replaced when the UI Value is updated.</p>
 
-<p>If each element in the <code>AST</code> would have it&#39;s original <code>AST</code>-index and an
-element that consumed some original or created elements would have a range
-from first to last consumed elements accumulated, ideally the range
-works out to know which part of the <code>AST</code> have to be replace. There shouldn&#39;t
-be any difficulties caused by the tokens getting reordered in the postfix
-stack, check this when implementing! Comments in between might get lost
-though! I don&#39;t care in this iteration, we can be smart about this later.
-For the example of the UI-Vector, the vector that makes up the initial
-intrinsic value may have three <code>Vector 10 20</code> or one <code>anotherVector</code> or
-any number of items <code>Vector (10 * 3 + 4 / anotherNumber) 0</code> in its range.
-We must also take care that we don&#39;t mix up ranges from different stacks,
-when pulling in references, but that&#39;s obvious.</p>
+<h2>Tracking down the Source</h2>
+
+<p><em>You can <a href="#the-hack">skip</a> this paragraph if you are not interested in red herrings.</em></p>
+
+<p>We&#39;ll need to track back the <code>ASTOperation</code> that created the UI-Element.
+Here are some early approaches and why they don&#39;t work out.</p>
+
+<p>My first idea was to inject some tracking information into the postfix stack,
+so when we evaluate the postfix stack, we&#39;ll be able know which operation
+created the result. However, the problem lies a bit deeper than this,
+because an operation that returns a <code>UI instance</code> is not necessarily the
+creator of it; the creator could be another property of another rule.
+At this point our tracking would have to track back the source of the
+<code>UI instance</code> which could mean the traversal of several other properties
+and despite that, serious changes to <code>StyleDict</code>, to make such a back
+tracking possible.</p>
+
+<p>Properties can be reused, we need to know the exact <code>PropertyDict</code> and
+index. Otherwise, we may end up changing the wrong place! The tracking out
+of the blue is hard to do with just the last node. I.e. if we are in the
+right style dict and if we have the right property, we could get the
+<code>property.value.value.ast</code> and walk it down until we find the right
+<code>ASTOperation</code>. <em>However,</em> if the property that emitted the
+UI-Element is just a getter into something else, we can&#39;t follow that.</p>
+
+<p>One way could be to add all the relevant <code>ASTOperation</code> to a path array,
+to record the way the property took. This would create some overhead,
+though. For one, we need to create a new array for each station, copying
+the current one and appending to the copy. Also, we don&#39;t really want that
+kind of tracking information!</p>
+
+<p>I removed a lengthy brainstorming paragraph here, what we ended up with
+is <a href="#the-hack">The Hack</a>.</p>
+
+<h2><a name="the-hack">The Hack</a></h2>
+
+<p>Believe me, I&#39;m not very proud of this, but a series of small changes in
+different modules of Atem made it possible to inject the original <code>astOperation</code>
+of <code>UI instances</code> (this are instances of the <code>Atem-Property-Language/UI</code>
+class) into their <code>UI</code> constructor. We want this badly because the actual
+user interface code must know exactly where in the model change needs to
+happen. With less information we may have to either search — this slow — or
+index — needs syncing — the right place and may still face ambiguity.</p>
+
+<h3>Not exactly proud.</h3>
+
+<p>The <a href="#interplay">solution</a> that happened to turn up is very implicit.
+It took a couple of small changes in several Atem submodules that don&#39;t
+make much sense by themselves, just the combination of all these changes
+do what I need. This means it is hard to document and easy to mess up by
+an uninitiated developer. I&#39;m writing this section to link to from all of
+these not obvious situations. And maybe we can formalize the behavior in a
+future iteration.</p>
+
+<h3>Data Flow</h3>
+
+<p>What we want to achieve is constructing a <code>UI-instance</code>, like this:</p>
+<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">new</span> UI(rule, property, astOperation, args);
+</pre></div>
+
+<p>This instance will be returned by a call to <code>styleDict.get(&#39;someName&#39;);</code>
+and then be used to display user interfaces that change the value of the
+<code>UI-instance</code>. Here, it is important to mention that we don&#39;t make any
+further assumption about whether or how the <code>UI-instance</code> is used, what
+type or value it represents and what its arguments are. All this is subject
+to the actual user interface code. Also, here we don&#39;t really care if
+is actually an instance of <code>UI</code>, it could be anything. We just use the <code>UI</code>
+class to get started with something. If there are more diverse needs in the
+future, similar elements can be crated using the same mechanics.</p>
+
+<p>A second, even more important observation is that the property that returns
+the <code>UI-instance</code> is not necessarily the property that created it, <strong>it can
+be referenced from anywhere</strong>, and that the property that actually created
+the <code>UI-instance</code> may not have done so exclusively. It could be nested into
+some kind of <code>List</code> constructor, be debugged using the <code>_print</code> operator
+or — in a future version of Property Language — be created in some kind of
+conditional <code>if-else</code> statement.</p>
+
+<p>So, what do those arguments mean:</p>
+
+<ul>
+<li><code>rule</code> is the CPS rule instance that contains the <code>property</code>.</li>
+<li><code>property</code> is the <code>PropertyName</code>/<code>PropertyValue</code> pair that <strong>created</strong> the
+<code>UI-Instance</code>. To be more precise that executed the <code>OperatorToken</code> which
+created the <code>UI-Instance</code>. The <code>PropertyValue</code> contains the Property Language
+<code>Expression</code> and that in turn is home of the <code>ast</code> <em>Abstract Syntax Tree</em>
+that we want to manipulate eventually.</li>
+<li><code>astOperation</code> is the exact node in the <code>ast</code> that holds the aforementioned
+<code>OperatorToken</code>.</li>
+</ul>
+
+<p>We need the <code>rule</code> because this is the thing that we are actually going to
+change, its <code>PropertyDict</code> at <code>rule.properties</code> to be precise.
+The <code>property</code> is treated as immutable and can&#39;t be changed, it can
+only be replaced. We use it to find the right slot in the <code>rule</code> to change.
+So this could as well be just the <code>propertyName</code> as a <code>key</code> in the <code>rule</code>
+and we&#39;d then ask the <code>rule</code> directly for the <code>property</code>.</p>
+
+<p>Both, the using the <code>key</code> <em>and</em> using the <code>property</code> are subject to a race
+condition. It could be that at the time when the rule is about to be changed
+via a user interface, the rule has already changed and at the <code>key</code> is another
+<code>property</code>. Then we say the <code>UI-instance</code> has <strong>lost it&#39;s mandate</strong> to change
+the rule. By using just a <code>key</code> in the <code>UI</code> constructor instead of the
+<code>property</code> we wouldn&#39;t be able to detect if there&#39;s another <code>property</code> for
+the <code>key</code> in the <code>rule</code> now. By using the <code>property</code> we can simply check the
+identity of the active <code>property</code> and if it does not match, dismiss the operation.</p>
+
+<p>At this point,</p>
+
+<ol>
+<li><code>astToken</code> will be assured to be a node in <code>property.value.value.ast</code>
+And we can use it to</li>
+<li>find the exact place in the <code>ast</code> that needs to be changed
+when creating a new manipulated version of the <code>ast</code>.</li>
+<li>Then create a new <code>Expression</code>,</li>
+<li>put it in a new <code>PropertyValue</code>,</li>
+<li>put that in a new <code>Property</code> with the same <code>PropertyName</code> of course</li>
+<li>and then <em>finally</em> change the <code>rule</code> by overriding the old <code>property</code> with the new one.</li>
+</ol>
+
+<p>Subscribers will be informed and the model will start updating.</p>
+
+<h3><a name="interplay">Interplay</a></h3>
+
+<p>As mentioned, the call to <code>new UI</code> is made within an instance of <code>OperatorToken</code>
+and in the within the concrete implementation of the <code>OperatorToken</code> we
+need to get our hands on all three of <code>rule</code>, <code>property</code>, <code>astOperation</code>.</p>
+
+<h4>Changes to <code>Atem-CPS/CPS/StyleDict</code></h4>
+
+<p>The first two arguments, <code>rule</code> and <code>property</code>, are known on execution
+time by the <code>styleDict</code> that actually runs the <code>evaluate</code> method of the
+<code>PropertyValues</code> instance of <code>Expression</code>. We have always had a way to
+ask the <code>styleDict</code> directly for data: the <code>getAPI</code>, which is given as an
+argument to  <code>expression.evaluate</code> by <code>styleDict</code>, has exactly that purpose.
+All I had to do was adding a method <code>getAPI.getCurrentPropertyAndRule()</code>
+to return both items in question.</p>
+
+<p>What&#39;s left to do is to get our hands on the <code>astOperation</code> that is
+responsible for the creation of the <code>UI-instance</code>.</p>
+
+<h4>Changes to <code>Atem-Property-Language/parsing/OperatorToken</code></h4>
+
+<p>At the lowest level the <code>OperatorToken</code> now accepts a new flag, <code>*optional*</code>,
+which injects the third argument the the call to <code>execute</code> into the
+concrete implementation. Hence <code>operatorToken.execute(getAPI, _args, optional)</code>
+has now a third  argument, literally called <code>optional</code>.
+There was the flag <code>*getApi*</code> before which would make <code>OperatorToken</code> inject
+the <code>getAPI</code> as first argument into the call to the concrete operator
+implementation. if <code>*getApi*</code> is set <code>optional</code> will be injected as second
+argument, otherwise as first, followed by the regular arguments.
+The name <code>optional</code> is vague on purpose, because I don&#39;t want it to be
+pinned down to a too specific use case by a mere naming decision.</p>
+
+<h4>Changes to <code>Atem-Property-Language/parsing/Parser</code></h4>
+
+<p>In order to get the <code>astOperation</code> to the <code>execute</code> call of the <code>OperatorToken</code>
+we have to keep it around until the call to <code>execute</code> is made. The first
+part of this is achieved by adding a flag <code>keepASTOperations</code> to
+<code>parser.astToPostfix (node, keepASTOperations)</code>. Without the flag being
+set, <code>astToPostfix</code> unwraps the <code>operatorToken</code> from the <code>astOperation</code>
+and pushes it onto the resulting, flat <em>postfix stack</em>. With the flag,
+this <q>unwrapping</q> is not performed and the <code>astOperation</code> ends where
+previously the <code>operatorToken</code> would have been.</p>
+
+<h4>Changes to <code>Atem-Property-Language/parsing/ASTOperation</code></h4>
+
+<p>Fortunately the evaluation of the <em>postfix stack</em> is straight forward and
+not particularly complex. As such, for the <code>ASTOperation</code> to behave like
+the <code>operatorToken</code> that it replaces was a pretty simple application of duck
+typing. Two properties <code>ejects</code> and <code>consumes</code> where implemented as getters
+and read directly from the original <code>operatorToken</code>. The method
+<code>astOperation.execute(getAPI, args)</code> however does not simply forward the
+call to the <code>operatorToken</code>, instead, it augments the call to inject
+itself: <code>return this.operator.execute(getAPI, args, this);</code>.</p>
+
+<p>This was the last in the series of small changes, needed in order to
+know all of <code>rule</code>, <code>property</code> and <code>astOperation</code> at the time of constructing
+the <code>UI-instance</code>. Eventually this enables the CPS-UI feature and probably
+more direct interaction with the CPS Property Language in the future.</p>
 
 </article>
 
