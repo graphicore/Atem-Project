@@ -1,5 +1,9 @@
 # Atem-CPS and OMA
 
+*Video giving an overview of CPS:*
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fyfysUikaFQ" frameborder="0" allowfullscreen></iframe>
+
 *This is an introduction to the concepts of CPS and OMA by comparison with
 CSS and the DOM.*
 
