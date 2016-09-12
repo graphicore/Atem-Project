@@ -12,7 +12,7 @@ OMA and CPS are conceptually influenced by the interplay of [DOM](https://en.wik
 (Cascading Style Sheets) by the [W3C](https://www.w3.org/).
 
 
-CPS stands for **Cascading Parameters Sheets** we kept the name similar to
+CPS stands for **Cascading Properties Sheets** we kept the name similar to
 CSS on purpose. OMA stands for **Object Model API** and is the conceptual
 counterpart to the DOM.
 
