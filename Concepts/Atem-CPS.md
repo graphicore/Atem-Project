@@ -1,5 +1,9 @@
 # Atem-CPS and OMA
 
+*Video giving an overview of CPS:*
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fyfysUikaFQ" frameborder="0" allowfullscreen></iframe>
+
 *This is an introduction to the concepts of CPS and OMA by comparison with
 CSS and the DOM.*
 
@@ -8,7 +12,7 @@ OMA and CPS are conceptually influenced by the interplay of [DOM](https://en.wik
 (Cascading Style Sheets) by the [W3C](https://www.w3.org/).
 
 
-CPS stands for **Cascading Parameters Sheets** we kept the name similar to
+CPS stands for **Cascading Properties Sheets** we kept the name similar to
 CSS on purpose. OMA stands for **Object Model API** and is the conceptual
 counterpart to the DOM.
 
