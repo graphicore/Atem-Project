@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <title>ATypI | Introducing Metapolator (and Atem)</title>
+    <script>
+        function go(dir) {
+
+            var num = parseInt(location.hash.slice(5));
+            if(num !== num)
+                num = 0
+            else {
+                num = num + dir
+                num = Math.max(0, num)
+                num = Math.min(12, num)
+            }
+            document.location.hash = 'next' + num
+        }
+        var goUp = go.bind(null, -1);
+        var goDown = go.bind(null, +1);
+
+        document.addEventListener('keydown', function(e){
+            if(e.keyCode===40)
+                goDown()
+            else if(e.keyCode===38)
+                goUp()
+            else
+                return;
+            e.preventDefault();
+        });
+    </script>
+    <style>
+@import 'https://fonts.googleapis.com/css?family=Alegreya+Sans:500,500i,700,700i';
+
+@font-face {
+  font-family: 'SudoFont';
+  font-style: regular;
+  font-weight: 400;
+  src: url(./Sudo.ttf);
+}
+
+html {
+    font-family: 'Alegreya Sans';
+    font-size: 40px
+}
+
+body > * {
+    width: 80%;
+    margin: 0 auto;
+}
+
+h2 {
+    font-size: 1.75em;
+    line-height: 1.1em;
+    margin-top: .5em;
+}
+h3 {
+  margin-top: 1em;
+}
+
+h2 > a {
+    padding-top: 1.5em;
+    display: block;
+}
+video {
+    width: 50%;
+}
+
+code {
+    font-family: SudoFont;
+}
+    </style>
+</head>
+<body>
+
+<div id="intro" style="margin-bottom:100%">
+<h1>ATypI 2016: Introducing Metapolator</h1>
+
+<p>This is the slide deck for a <a href="https://www.atypi.org/conferences/atypi-warsaw-2016/programme/activity?a=628">talk</a>
+ given at the <a href="https://www.atypi.org/conferences/atypi-warsaw-2016">ATypi 2016</a> conference in Warsaw<br />
+September 14th, 2016.</p>
+
+<p>Please use <code>UP</code> and <code>DOWN</code> arrows to navigate.</p>
+
+<p>Made for a Full HD (1920 × 1080) resolution.<br />
+Press <code>F11</code> to go full screen and also watch the videos in full screen.</p>
+</div>
+
+<h2><a name="next0">Metapolator Screencast</a></h2>
+
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/wQC9CtsrbRQ" frameborder="0" allowfullscreen></iframe></p>
+
+<p><a href="#next1" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next1"><img style="margin-top:-1em;" src="Atem-Project.svg" width="30%" /></a></h2>
+
+<ul>
+<li>Metapolator is designed to be much more.</li>
+<li>There's a lot to do and to invent and I'm alone.</li>
+<li>Product ≠ Project<br />
+<code>https://www.linux.com/blog/why-your-open-source-project-not-product</code></li>
+</ul>
+
+<p><a href="#next2" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next2">Imagine a community of tinkerers, designers and nerds who enjoy trying new ideas for creative tools.</a></h2>
+
+<p><a href="#next3" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next3">Imagine a community of tinkerers, designers and nerds who enjoy trying new ideas for creative tools.</a></h2>
+
+<h2>Imagine helping people who are less privileged.</h2>
+
+<p>Think of minority scripts which are also complex and/or have many glyphs.</p>
+
+<p><a href="#next4" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next4">Imagine a community of tinkerers, designers and nerds who enjoy trying new ideas for creative tools.</a></h2>
+
+<h2>Imagine helping people who are less privileged.</h2>
+
+<p>Think of minority scripts which are also complex and/or have many glyphs.</p>
+
+<h2>Imagine tools that have educational aspirations, that help users gathering a deeper understanding.</h2>
+
+<p><a href="#next5" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next5">Imagine a community of tinkerers, designers and nerds who enjoy trying new ideas for creative tools.</a></h2>
+
+<h2>Imagine helping people who are less privileged.</h2>
+
+<p>Think of minority scripts which are also complex and/or have many glyphs.</p>
+
+<h2>Imagine tools that have educational aspirations, that help users gathering a deeper understanding.</h2>
+
+<h2>Imagine a new breed of tools that make new kinds of design possible.</h2>
+
+<p><a href="#next6" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next6">Where are we now and how did we get here?</a></h2>
+
+<h3>CPS and CSS, OMA and DOM</h3>
+
+<p><code>http://atem.graphicore.de/content/Concepts/Atem-CPS.md.html</code></p>
+
+<p><a href="#next7" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next7">CPS-Panel: MOM Developer Tool Screencast</a></h2>
+
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/XtkwQNAYoHE" frameborder="0" allowfullscreen></iframe></p>
+
+<p><a href="#next8" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next8">Roadmap short-term (this year!)</a></h2>
+
+<ul>
+<li>Project loading and saving (almost there)</li>
+<li>MOM Developer Tool: drag and drop control points (almost there)</li>
+<li>Object Model inspection widget</li>
+<li>Finish and polish the Bauhaus Emblem Font tool (almost there)</li>
+<li>CPS-UI (almost there)</li>
+<li>MOM Developer Tool: feature parity with current Metapolator</li>
+</ul>
+
+<p><a href="#next9" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next9">CPS-UI Screencast</a></h2>
+
+<p><iframe width="560" height="315" src="https://www.youtube.com/embed/JCiEuAQ_mbw" frameborder="0" allowfullscreen></iframe></p>
+
+<p><a href="#next10" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next10">Roadmap medium-term (next year?)</a></h2>
+
+<ul>
+<li>Atem-Shell/Atem-IDE as a base for projects to start.</li>
+<li>OMA/MOM Plugins</li>
+<li>MOM Editor (importing from UFO is not sufficient)</li>
+<li>Maybe: Metacomponents</li>
+</ul>
+
+<h3>After that:</h3>
+
+<ul>
+<li>Redo/Undo/History</li>
+<li>Metapolator rewrite to run in the Atem-Shell</li>
+<li>More new tools</li>
+<li>Advance Metapolator</li>
+<li>Improve CPS Tooling
+…</li>
+</ul>
+
+<p><a href="#next11" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next11">Questions for the audience:</a></h2>
+
+<ol>
+<li>Foundries, what do you find hard about making large font families?</li>
+<li>Design Studios, can you imagine using meta-design — i.e. custom made tools that define the design — for client projects?</li>
+</ol>
+
+<p><a href="#next12" style="display:block; margin-bottom:100%;opacity:0;">next</a></p>
+
+<h2><a name="next12">Thank you!</a></h2>
+
+<p><code>http://atem.graphicore.de</code></p>
+
+<p><code>http://metapolator.com</code></p>
+
+<h3>Mentioned Links:</h3>
+
+<p><code>https://www.linux.com/blog/why-your-open-source-project-not-product</code></p>
+
+<p><code>http://atem.graphicore.de/content/Concepts/Atem-CPS.md.html</code></p>
+
+<h3>Lasse Fister</h3>
+
+<p><code>http://graphicore.de</code></p>
+
+<p>Twitter: <code>@lassefister</code></p>
+
+<p>GitHub: <code>@graphicore</code></p>
+
+<hr style="display:block; margin-bottom:100%;opacity:0;" />
+
+</body>
+</html>
