@@ -2,7 +2,11 @@ language: python
 python:
   - "3.8"
 script: bash ./deploy.sh
-env:
-  global:
-  - ENCRYPTION_LABEL: "354c73d975f9"
-  - COMMIT_AUTHOR_EMAIL: "commander@graphicore.de"
+deploy:
+  provider: pages # default "target_branch" goes gh-pages
+  local_dir: .build
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep_history: true
+  on:
+    branch: master # conditional, only when we are on branch master
