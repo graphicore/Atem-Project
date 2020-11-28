@@ -13,7 +13,7 @@ pushd .
 cd $WEBGENERATOR_DIR
 # assume python is in version >= 3.5
 # and since we are on travis, there's no need for a virtual environment
-pip install -r requirements.txt
+pip install .
 popd
 
 function doCompile {
