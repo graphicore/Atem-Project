@@ -4,6 +4,7 @@ html {
    font-family: 'Alegreya Sans', sans-serif;
    overflow-y: scroll;
    font-size: 1.4em;
+   background: white;
 }
 body {
    max-width: 1000px;

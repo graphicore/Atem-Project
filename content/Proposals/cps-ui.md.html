@@ -43,24 +43,24 @@
            >Atem-Projekt on Patreon</a>
 
 
-    <h1><a href="../../index.html"><img style="width:240px;height:240px"
+    <h1><a href="../../"><img style="width:240px;height:240px"
              class="logo"
              alt="Atem Tooling Expressive Models"
              src="../../files/Atem-Logo.svg" /></a></h1>
     <nav class="main-menu">
         <ul class="top-level"><!--
         --><li class="">
-            <a href="../../index.html">Atem</a>
+            <a href="../../">Atem</a>
             </li><!----><!--
         --><li class="">
-            <a href="../Sub-Projects/index.html">Project</a>
+            <a href="../Sub-Projects/">Project</a>
             </li><!----><li class="sub-level"><ul><!--
         --><li class="">
-        <a href="../Concepts/index.html">Concepts</a></li><!--
+        <a href="../Concepts/">Concepts</a></li><!--
         --><li class="">
-        <a href="index.html">Proposals</a></li><!--
+        <a href="/">Proposals</a></li><!--
         --><li class="">
-        <a href="../Manuals/index.html">Manuals</a></li><!--
+        <a href="../Manuals/">Manuals</a></li><!--
         --><li class="">
         <a href="api-docs-generator.md.html">API</a></li><!----></ul></li><!----><!--
         --><li class="">
@@ -105,8 +105,8 @@
 <p>This is the most important feature at the time of writing this. It will
 enable the CPS author to define interfaces for a project directly within CPS.
 E.g. a handle to move a control point would be defined like this:</p>
-<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">element</span> {
-    onOffset<span style="color: #666666">:</span> Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span>;
+<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%; margin: 0;"><span></span><span style="color: #008000; font-weight: bold">element</span> {
+    onOffset: Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span>;
     <span style="color: #408080; font-style: italic">/*</span>
 <span style="color: #408080; font-style: italic">    similar to a List constructor, this style would allow us to define</span>
 <span style="color: #408080; font-style: italic">    custom parameters for the ui Element.</span>
@@ -118,12 +118,12 @@ E.g. a handle to move a control point would be defined like this:</p>
 <span style="color: #408080; font-style: italic">    the added flexibility could be very helpful to get an idea of the needed</span>
 <span style="color: #408080; font-style: italic">    features in the new language.</span>
 <span style="color: #408080; font-style: italic">    */</span>
-    onUI<span style="color: #666666">:</span> UI Vector <span style="color: #666666">123</span> <span style="color: #666666">456</span> onOffset;
+    onUI: UI Vector <span style="color: #666666">123</span> <span style="color: #666666">456</span> onOffset;
     <span style="color: #408080; font-style: italic">/*</span>
 <span style="color: #408080; font-style: italic">    We should unwrap the value of onUI, a Vector, as a value for on. Thus</span>
 <span style="color: #408080; font-style: italic">    there&#39;s no need for new validation/type checks in the object model.</span>
 <span style="color: #408080; font-style: italic">    */</span>
-    on<span style="color: #666666">:</span> onUI<span style="color: #666666">.</span>value;
+    on: onUI<span style="color: #666666">.</span>value;
 }
 </pre></div>
 
@@ -139,10 +139,10 @@ property, a list.</p>
 <p>When the <code>ui</code> property here is changed by the user interface it caused, say
 the coordinate is dragged by <code>x = -23</code> and <code>y = 44</code> the definition of the
 CPS above is changed to:</p>
-<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">element</span> {
-    offset<span style="color: #666666">:</span> Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span>;
-    ui<span style="color: #666666">:</span> UI (Vector <span style="color: #666666">100</span> <span style="color: #666666">500</span>) offset;
-    on<span style="color: #666666">:</span> onUI<span style="color: #666666">.</span>value;
+<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%; margin: 0;"><span></span><span style="color: #008000; font-weight: bold">element</span> {
+    offset: Vector <span style="color: #666666">100</span> <span style="color: #666666">100</span>;
+    ui: UI (Vector <span style="color: #666666">100</span> <span style="color: #666666">500</span>) offset;
+    on: onUI<span style="color: #666666">.</span>value;
 }
 </pre></div>
 
@@ -166,7 +166,7 @@ nothing else and if the type of the <code>UI-Instance</code> is supported by the
 interface, it would display it accordingly.</p>
 
 <p>Pseudocode:</p>
-<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic">// element is the OMA node</span>
+<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%; margin: 0;"><span></span><span style="color: #408080; font-style: italic">// element is the OMA node</span>
 
 <span style="color: #008000; font-weight: bold">var</span> sd <span style="color: #666666">=</span> element.getComputedStyle();
   , keys <span style="color: #666666">=</span> sd.keys
@@ -306,7 +306,7 @@ future iteration.</p>
 <h3>Data Flow</h3>
 
 <p>What we want to achieve is constructing a <code>UI-instance</code>, like this:</p>
-<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">new</span> UI(rule, property, astOperation, args);
+<div class="code-highlighted" style="background: #f8f8f8"><pre style="line-height: 125%; margin: 0;"><span></span><span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">new</span> UI(rule, property, astOperation, args);
 </pre></div>
 
 <p>This instance will be returned by a call to <code>styleDict.get(&#39;someName&#39;);</code>
