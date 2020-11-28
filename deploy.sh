@@ -8,13 +8,7 @@ BUILD_DIR=".build"
 WEBGENERATOR_REPO="https://github.com/graphicore/Atem-Webgenerator.git"
 WEBGENERATOR_DIR=".webgenerator"
 
-git clone $WEBGENERATOR_REPO $WEBGENERATOR_DIR
-pushd .
-cd $WEBGENERATOR_DIR
-# assume python is in version >= 3.5
-# and since we are on travis, there's no need for a virtual environment
-pip install .
-popd
+pip install git+$WEBGENERATOR_REPO
 
 function doCompile {
     webgenerator . $BUILD_DIR
