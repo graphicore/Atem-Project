@@ -17,7 +17,7 @@ pip install .
 popd
 
 function doCompile {
-    $WEBGENERATOR_DIR/webgenerator.py . $BUILD_DIR
+    webgenerator . $BUILD_DIR
 }
 
 # Pull requests and commits to other branches shouldn't try to deploy, just build to verify
